@@ -7,6 +7,7 @@
  */
 
 #include "dictionary.h"
+#include "strutils.h"
 
 #include <assert.h>
 
@@ -16,6 +17,10 @@
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
+
+#include <codecvt>
+#include <sstream>
+
 
 namespace fasttext {
 
@@ -299,6 +304,36 @@ bool Dictionary::checkCoding(const int c) const
    return true;
 }
 
+bool Dictionary::readWord(std::wistream& in, std::wstring& word) const
+{
+  int c;
+  std::wstreambuf& sb = *in.rdbuf();
+  word.clear();
+  while ((c = sb.sbumpc()) != 0xFFFF)
+  {
+     
+    if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
+        c == '\f' || c == '\0')
+    {
+      if (word.empty()) {
+        if (c == '\n') {
+          word += L"</s>";
+          return true;
+        }
+        continue;
+      } else {
+        if (c == '\n')
+          sb.sungetc();
+        return true;
+      }
+    }
+    word.push_back(c);
+  }
+  // trigger eofbit
+  in.get();
+  return !word.empty();
+}
+
 bool Dictionary::readWord(std::istream& in, std::string& word) const
 {
   int c;
@@ -330,6 +365,51 @@ bool Dictionary::readWord(std::istream& in, std::string& word) const
   // trigger eofbit
   in.get();
   return !word.empty();
+}
+
+void Dictionary::readFromFile(const std::string& input, std::shared_ptr<Dictionary> stopwords)
+{
+   std::wifstream wisw(cstr_to_wstr(input.c_str()));
+   if (!wisw.is_open()) return;
+   wisw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+
+   std::string word;
+   int64_t minThreshold = 1;
+
+   std::wstring wword;
+   while (readWord(wisw, wword))
+   {
+      word = translate_str(wword);
+
+      bool bf = stopwords && stopwords->find(word);
+
+      if (!bf)
+      {
+         add(word);
+      }
+      if ((ntokens_ % 1000000 == 0) && (ntokens_ > 1000000) && (args_->verbose > 1)) {
+         std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::flush;
+      }
+      if (size_ > 0.75 * MAX_VOCAB_SIZE) {
+         minThreshold++;
+         threshold(minThreshold, minThreshold);
+      }
+   }
+   wisw.close();
+
+   threshold(args_->minCount, args_->minCountLabel);
+   initTableDiscard();
+   initNgrams();
+   if (args_->verbose > 0) {
+      std::cerr << "-----------------" << std::endl;
+      std::cerr << "\rRead " << ntokens_ << " words" << std::endl;
+      //std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::endl;
+      std::cerr << "Number of words:  " << nwords_ << std::endl;
+      std::cerr << "Number of labels: " << nlabels_ << std::endl;
+   }
+   if (size_ == 0) {
+      throw std::invalid_argument("Empty vocabulary. Try a smaller -minCount value.");
+   }
 }
 
 void Dictionary::readFromFile(std::istream& in, std::shared_ptr<Dictionary> stopwords)

@@ -14,7 +14,8 @@ int main()
    args->minCount = 1;
 
    auto stopwords = std::make_shared<fasttext::Dictionary>(args, VOCAB_SZ);
-   stopwords->readFromFile(std::ifstream("stopwords.txt"), nullptr);
+   //stopwords->readFromFile(std::ifstream("stopwords.txt"), nullptr);
+   stopwords->readFromFile("stopwords.txt", nullptr);
 
    stopwords->dump(std::cout);
 

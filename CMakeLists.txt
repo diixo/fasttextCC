@@ -37,6 +37,7 @@ set(HEADER_FILES
     src/productquantizer.h
     src/quantmatrix.h
     src/real.h
+    src/strutils.h
     src/utils.h
     src/vector.h)
 
@@ -53,6 +54,7 @@ set(SOURCE_FILES
     src/model.cc
     src/productquantizer.cc
     src/quantmatrix.cc
+    src/strutils.cc
     src/utils.cc
     src/vector.cc)
 

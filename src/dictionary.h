@@ -92,8 +92,10 @@ class Dictionary {
       std::vector<std::string>* substrings = nullptr) const;
   uint32_t hash(const std::string& str) const;
   void add(const std::string&);
+  bool readWord(std::wistream& in, std::wstring& word) const;
   bool readWord(std::istream&, std::string&) const;
   void readFromFile(std::istream&, std::shared_ptr<Dictionary>);
+  void readFromFile(const std::string& input, std::shared_ptr<Dictionary> stopwords);
   std::string getLabel(int32_t) const;
   void save(std::ostream&) const;
   void load(std::istream&);
