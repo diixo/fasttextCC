@@ -245,6 +245,60 @@ void Dictionary::initNgrams()
   }
 }
 
+bool Dictionary::checkCoding(const int c) const
+{
+   assert(EOF == -1);
+
+   static int ch1 = -1; // EOF
+   static int ch2 = -1; // EOF
+   static int ch3 = -1; // EOF
+
+   if (c == -1)
+   {
+      ch1 = -1;
+      ch2 = -1;
+      ch3 = -1;
+      return false;
+   }
+
+   if (ch1 == -1)
+   {
+      ch1 = c;
+      return true;
+   }
+
+   if (ch1 != -1 && ch2 == -1)
+   {
+      ch2 = c;
+      if (ch1 == 0xff && ch2 == 0xfe)
+      {
+         // UTF-16LE_BOM
+         return false;
+      }
+      else if (ch1 == 0xfe && ch2 == 0xff)
+      {
+         // UTF-16BE_BOM
+         return false;
+      }
+      return true;
+   }
+   else
+   {
+      if (ch3 == -1)
+      {
+         ch3 = c;
+
+         if (ch1 == 0xef && ch2 == 0xbb && ch3 == 0xbf)
+            return false; // UTF8_BOM
+         else
+            // ASCII without BOM
+            return true;
+            //ifs.seekg(0);
+      }
+   }
+   return true;
+}
+
 bool Dictionary::readWord(std::istream& in, std::string& word) const
 {
   int c;
@@ -252,6 +306,8 @@ bool Dictionary::readWord(std::istream& in, std::string& word) const
   word.clear();
   while ((c = sb.sbumpc()) != EOF)
   {
+     const bool check = checkCoding(c);
+
     if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
         c == '\f' || c == '\0')
     {
@@ -268,6 +324,8 @@ bool Dictionary::readWord(std::istream& in, std::string& word) const
       }
     }
     word.push_back(c);
+    if (!check)
+       word.clear();
   }
   // trigger eofbit
   in.get();
@@ -294,6 +352,7 @@ void Dictionary::readFromFile(std::istream& in, std::shared_ptr<Dictionary> stop
          threshold(minThreshold, minThreshold);
       }
    }
+   checkCoding(EOF);
    threshold(args_->minCount, args_->minCountLabel);
    initTableDiscard();
    initNgrams();

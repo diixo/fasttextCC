@@ -38,6 +38,7 @@ class Dictionary {
 
   int32_t find_id(const std::string&) const;
   int32_t find(const std::string&, uint32_t h) const;
+  bool checkCoding(const int c) const;
   void initTableDiscard();
   void initNgrams();
   void reset(std::istream&) const;

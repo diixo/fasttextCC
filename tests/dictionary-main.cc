@@ -16,6 +16,8 @@ int main()
    auto stopwords = std::make_shared<fasttext::Dictionary>(args, VOCAB_SZ);
    stopwords->readFromFile(std::ifstream("stopwords.txt"), nullptr);
 
+   stopwords->dump(std::cout);
+
    fasttext::Dictionary dictionary(args, VOCAB_SZ);
    dictionary.readFromFile(std::ifstream("train-data.txt"), stopwords);
 
