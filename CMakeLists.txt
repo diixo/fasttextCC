@@ -6,12 +6,12 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 2.9)
 project(fasttext)
 
 # The version number.
-set (fasttext_VERSION_MAJOR 0)
-set (fasttext_VERSION_MINOR 1)
+set(fasttext_VERSION_MAJOR 0)
+set(fasttext_VERSION_MINOR 1)
 
 include_directories(fasttext)
 
@@ -59,20 +59,21 @@ endif()
 add_library(fasttext-shared SHARED ${SOURCE_FILES} ${HEADER_FILES})
 add_library(fasttext-static STATIC ${SOURCE_FILES} ${HEADER_FILES})
 add_library(fasttext-static_pic STATIC ${SOURCE_FILES} ${HEADER_FILES})
+
 set_target_properties(fasttext-shared PROPERTIES OUTPUT_NAME fasttext
   SOVERSION "${fasttext_VERSION_MAJOR}")
 set_target_properties(fasttext-static PROPERTIES OUTPUT_NAME fasttext)
-set_target_properties(fasttext-static_pic PROPERTIES OUTPUT_NAME fasttext_pic
-  POSITION_INDEPENDENT_CODE True)
+set_target_properties(fasttext-static_pic PROPERTIES OUTPUT_NAME fasttext_pic POSITION_INDEPENDENT_CODE True)
+
 add_executable(fasttext-bin src/main.cc)
-target_link_libraries(fasttext-bin pthread fasttext-static)
+
+SET(CMAKE_EXE_LINKER_FLAGS "-pthread")
+target_link_libraries(fasttext-bin fasttext-static)
+#target_link_libraries(fasttext-bin pthread fasttext-static)
+
 set_target_properties(fasttext-bin PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" OUTPUT_NAME fasttext)
-install (TARGETS fasttext-shared
-    LIBRARY DESTINATION lib)
-install (TARGETS fasttext-static
-    ARCHIVE DESTINATION lib)
-install (TARGETS fasttext-static_pic
-    ARCHIVE DESTINATION lib)
-install (TARGETS fasttext-bin
-    RUNTIME DESTINATION bin
- PUBLIC_HEADER DESTINATION include/fasttext)
+
+install (TARGETS fasttext-shared LIBRARY DESTINATION lib)
+install (TARGETS fasttext-static ARCHIVE DESTINATION lib)
+install (TARGETS fasttext-static_pic ARCHIVE DESTINATION lib)
+install (TARGETS fasttext-bin RUNTIME DESTINATION bin PUBLIC_HEADER DESTINATION include/fasttext)
