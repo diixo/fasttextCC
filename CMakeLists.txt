@@ -6,7 +6,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-cmake_minimum_required(VERSION 2.9)
+cmake_minimum_required(VERSION 3.0.2)
 project(fasttext)
 
 # The version number.
@@ -15,7 +15,14 @@ set(fasttext_VERSION_MINOR 1)
 
 include_directories(fasttext)
 
-set(CMAKE_CXX_FLAGS " -pthread -std=c++11 -funroll-loops -O3 -march=native")
+# Set compiler flags and options. 
+if (MSVC)
+    # Display more warnings
+   set (CMAKE_CXX_FLAGS "-std=c++11 /W3")
+else ()
+   set (CMAKE_CXX_FLAGS " -pthread -std=c++11 -funroll-loops -O3 -march=native")
+endif ()
+
 
 set(HEADER_FILES
     src/args.h
@@ -67,9 +74,12 @@ set_target_properties(fasttext-static_pic PROPERTIES OUTPUT_NAME fasttext_pic PO
 
 add_executable(fasttext-bin src/main.cc)
 
-SET(CMAKE_EXE_LINKER_FLAGS "-pthread")
-target_link_libraries(fasttext-bin fasttext-static)
-#target_link_libraries(fasttext-bin pthread fasttext-static)
+if (MSVC)
+  SET(CMAKE_EXE_LINKER_FLAGS "-pthread")
+  target_link_libraries(fasttext-bin fasttext-static)
+else()
+  target_link_libraries(fasttext-bin pthread fasttext-static)
+endif()
 
 set_target_properties(fasttext-bin PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" OUTPUT_NAME fasttext)
 
