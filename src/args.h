@@ -38,6 +38,7 @@ class Args {
   Args();
   std::string input;
   std::string output;
+  std::string stopwords;
   double lr;
   int lrUpdateRate;
   int dim;

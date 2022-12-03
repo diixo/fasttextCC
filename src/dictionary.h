@@ -36,8 +36,9 @@ class Dictionary {
   static const int32_t MAX_VOCAB_SIZE = 30000000;
   static const int32_t MAX_LINE_SIZE = 1024;
 
-  int32_t find(const std::string&) const;
+  int32_t find_id(const std::string&) const;
   int32_t find(const std::string&, uint32_t h) const;
+  bool find(const std::string& w) const;
   void initTableDiscard();
   void initNgrams();
   void reset(std::istream&) const;
@@ -90,7 +91,7 @@ class Dictionary {
   uint32_t hash(const std::string& str) const;
   void add(const std::string&);
   bool readWord(std::istream&, std::string&) const;
-  void readFromFile(std::istream&);
+  void readFromFile(std::istream&, std::shared_ptr<Dictionary>);
   std::string getLabel(int32_t) const;
   void save(std::ostream&) const;
   void load(std::istream&);

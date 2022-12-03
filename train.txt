@@ -1,0 +1,5 @@
+Native Protocols the - the library implements the native protocols needed to communicate with services running on iOS devices. Due to the reimplemention it does not depend on using or bundling any existing libraries from Apple.
+Cross-Platform - the C-language programming language enables cross-platform use of the library. It has already been built and run on  Linux,  Mac,  Windows,  Android and embedded  ARM SoCs.
+The architecture of the library and dependencies has been designed with an OOP approach in mind. Thus bindings for other programming languages are easier to create and allow an OOP based API.
+Many command-line utilities come bundled with the library that allow interacting with iOS device services already. This covers retrieving basic device information up to restoring official firmware images.
+Devices that have "Wifi Sync" enabled can be accessed wirelessly and do not require a wired USB connection anymore with iOS.

@@ -39,6 +39,7 @@ class FastText {
  protected:
   std::shared_ptr<Args> args_;
   std::shared_ptr<Dictionary> dict_;
+  std::shared_ptr<Dictionary> stopwords_;
   std::shared_ptr<Matrix> input_;
   std::shared_ptr<Matrix> output_;
   std::shared_ptr<Model> model_;

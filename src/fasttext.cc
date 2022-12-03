@@ -792,12 +792,22 @@ void FastText::train(const Args& args, const TrainCallback& callback)
     // manage expectations
     throw std::invalid_argument("Cannot use stdin for training!");
   }
+  if (!(args_->stopwords.empty()))
+  {
+     std::ifstream isw(args_->stopwords);
+     if (isw.is_open())
+     {
+        stopwords_ = std::make_shared<Dictionary>(args_);
+        stopwords_->readFromFile(isw, nullptr);
+        isw.close();
+     }
+  }
   std::ifstream ifs(args_->input);
   if (!ifs.is_open()) {
     throw std::invalid_argument(
         args_->input + " cannot be opened for training!");
   }
-  dict_->readFromFile(ifs);
+  dict_->readFromFile(ifs, nullptr);
   ifs.close();
 
   if (!args_->pretrainedVectors.empty()) {
