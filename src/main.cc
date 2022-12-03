@@ -480,7 +480,7 @@ void dump(const std::vector<std::string>& args)
   }
 }
 
-// cbow -input train.txt -output train.bin -stopwords stopwords.txt
+// cbow -input train-data.txt -output train-data -stopwords stopwords.txt
 int main(int argc, char** argv)
 {
   std::vector<std::string> args(argv, argv + argc);

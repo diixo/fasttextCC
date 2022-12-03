@@ -44,6 +44,17 @@ Dictionary::Dictionary(std::shared_ptr<Args> args, std::istream& in)
   load(in);
 }
 
+Dictionary::Dictionary(std::shared_ptr<Args> args, const int32_t vocab_size)
+   : args_(args),
+   word2int_(vocab_size, -1),
+   size_(0),
+   nwords_(0),
+   nlabels_(0),
+   ntokens_(0),
+   pruneidx_size_(-1)
+{}
+
+
 int32_t Dictionary::find_id(const std::string& w) const
 {
   return find(w, hash(w));
