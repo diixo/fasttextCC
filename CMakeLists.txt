@@ -87,3 +87,6 @@ install (TARGETS fasttext-shared LIBRARY DESTINATION lib)
 install (TARGETS fasttext-static ARCHIVE DESTINATION lib)
 install (TARGETS fasttext-static_pic ARCHIVE DESTINATION lib)
 install (TARGETS fasttext-bin RUNTIME DESTINATION bin PUBLIC_HEADER DESTINATION include/fasttext)
+
+add_subdirectory(tests)
+
