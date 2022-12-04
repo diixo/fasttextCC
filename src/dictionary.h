@@ -38,7 +38,6 @@ class Dictionary {
 
   int32_t find_id(const std::string&) const;
   int32_t find(const std::string&, uint32_t h) const;
-  bool find(const std::string& w) const;
   void initTableDiscard();
   void initNgrams();
   void reset(std::istream&) const;
@@ -109,6 +108,8 @@ class Dictionary {
   }
   void dump(std::ostream&) const;
   void init();
+  bool find(const std::string& w) const;
+  size_t size() const;
 };
 
 } // namespace fasttext

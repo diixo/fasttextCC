@@ -797,7 +797,9 @@ void FastText::train(const Args& args, const TrainCallback& callback)
      std::ifstream isw(args_->stopwords);
      if (isw.is_open())
      {
-        stopwords_ = std::make_shared<Dictionary>(args_);
+        auto s_arg = std::make_shared<Args>(args);
+        stopwords_ = std::make_shared<Dictionary>(s_arg);
+        s_arg->minCount = 1;
         stopwords_->readFromFile(isw, nullptr);
         isw.close();
      }

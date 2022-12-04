@@ -60,29 +60,32 @@ int32_t Dictionary::find_id(const std::string& w) const
   return find(w, hash(w));
 }
 
-bool Dictionary::find(const std::string& w) const
-{
-   int32_t word2intsize = word2int_.size();
-   int32_t id = hash(w) % word2intsize;
-   while (word2int_[id] != -1)
-   {
-      if (words_[word2int_[id]].word != w)
-         id = (id + 1) % word2intsize;
-      else
-         return true;
-   }
-   return false;
-}
 
 int32_t Dictionary::find(const std::string& w, uint32_t h) const
 {
   int32_t word2intsize = word2int_.size();
   int32_t id = h % word2intsize;
-  bool result = (word2int_[id] != -1) && (words_[word2int_[id]].word == w);
+
   while (word2int_[id] != -1 && words_[word2int_[id]].word != w) {
     id = (id + 1) % word2intsize;
   }
   return id;
+}
+
+size_t Dictionary::size() const
+{
+   return words_.size();
+}
+
+bool Dictionary::find(const std::string& w) const
+{
+   int32_t word2intsize = word2int_.size();
+   int32_t id = hash(w) % word2intsize;
+
+   while (word2int_[id] != -1 && words_[word2int_[id]].word != w) {
+      id = (id + 1) % word2intsize;
+   }
+   return (word2int_[id] > 0) && (words_[word2int_[id]].word == w);
 }
 
 void Dictionary::add(const std::string& w)
@@ -247,9 +250,11 @@ bool Dictionary::readWord(std::istream& in, std::string& word) const
   int c;
   std::streambuf& sb = *in.rdbuf();
   word.clear();
-  while ((c = sb.sbumpc()) != EOF) {
+  while ((c = sb.sbumpc()) != EOF)
+  {
     if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
-        c == '\f' || c == '\0') {
+        c == '\f' || c == '\0')
+    {
       if (word.empty()) {
         if (c == '\n') {
           word += EOS;
@@ -275,19 +280,9 @@ void Dictionary::readFromFile(std::istream& in, std::shared_ptr<Dictionary> stop
    int64_t minThreshold = 1;
    while (readWord(in, word))
    {
-      if (stopwords)
-      {
-         int32_t h = stopwords->find(word);
-         if (h > 0)
-         {
-            h = 0;
-         }
-         else
-         {
-            h = 0;
-         }
-      }
-      //else
+      bool bf = stopwords && stopwords->find(word);
+
+      if (!bf)
       {
          add(word);
       }
@@ -303,6 +298,7 @@ void Dictionary::readFromFile(std::istream& in, std::shared_ptr<Dictionary> stop
    initTableDiscard();
    initNgrams();
    if (args_->verbose > 0) {
+      std::cerr << "-----------------" << std::endl;
       std::cerr << "\rRead " << ntokens_ << " words" << std::endl;
       //std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::endl;
       std::cerr << "Number of words:  " << nwords_ << std::endl;
@@ -596,13 +592,14 @@ void Dictionary::prune(std::vector<int32_t>& idx)
 
 void Dictionary::dump(std::ostream& out) const
 {
-  out << words_.size() << std::endl;
+  out << "-----------------" << std::endl;
+  out << "words :" << words_.size() << std::endl;
   for (auto it : words_) {
     std::string entryType = "word";
     if (it.type == entry_type::label) {
       entryType = "label";
     }
-    out << it.word << " " << it.count << " " << entryType << std::endl;
+    out << it.word << " :" << it.count << " " << entryType << std::endl;
   }
 }
 
