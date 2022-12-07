@@ -804,7 +804,7 @@ void FastText::train(const Args& args, const TrainCallback& callback)
     throw std::invalid_argument(
         args_->input + " cannot be opened for training!");
   }
-  dict_->readFromFile(ifs, stopwords_);
+  dict_->readFromFile(args_->input, stopwords_);
   ifs.close();
 
   if (!args_->pretrainedVectors.empty()) {

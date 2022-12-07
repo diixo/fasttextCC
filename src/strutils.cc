@@ -207,8 +207,8 @@ wchar_t translateChar(const wchar_t ch)
 
    if ((ch >= 0x0041) && (ch <= 0x005a)) // check latin symbols
    {
-      //return ch;
-      return towlower(ch);
+      return ch;
+      //return towlower(ch);
    }
 
    if (isCharApostrophe(ch))
