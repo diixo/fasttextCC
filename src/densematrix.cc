@@ -17,21 +17,28 @@
 
 namespace fasttext {
 
-DenseMatrix::DenseMatrix() : DenseMatrix(0, 0) {}
+DenseMatrix::DenseMatrix() : DenseMatrix(0, 0)
+{}
 
-DenseMatrix::DenseMatrix(int64_t m, int64_t n) : Matrix(m, n), data_(m * n) {}
+DenseMatrix::DenseMatrix(int64_t m, int64_t n)
+   : Matrix(m, n), data_(m * n)
+{}
 
 DenseMatrix::DenseMatrix(DenseMatrix&& other) noexcept
-    : Matrix(other.m_, other.n_), data_(std::move(other.data_)) {}
+   : Matrix(other.m_, other.n_), data_(std::move(other.data_))
+{}
 
 DenseMatrix::DenseMatrix(int64_t m, int64_t n, real* dataPtr)
-    : Matrix(m, n), data_(dataPtr, dataPtr + (m * n)) {}
+   : Matrix(m, n), data_(dataPtr, dataPtr + (m * n))
+{}
 
-void DenseMatrix::zero() {
+void DenseMatrix::zero()
+{
   std::fill(data_.begin(), data_.end(), 0.0);
 }
 
-void DenseMatrix::uniformThread(real a, int block, int32_t seed) {
+void DenseMatrix::uniformThread(real a, int block, int32_t seed)
+{
   std::minstd_rand rng(block + seed);
   std::uniform_real_distribution<> uniform(-a, a);
   int64_t blockSize = (m_ * n_) / 10;
@@ -42,7 +49,8 @@ void DenseMatrix::uniformThread(real a, int block, int32_t seed) {
   }
 }
 
-void DenseMatrix::uniform(real a, unsigned int thread, int32_t seed) {
+void DenseMatrix::uniform(real a, unsigned int thread, int32_t seed)
+{
   if (thread > 1) {
     std::vector<std::thread> threads;
     for (int i = 0; i < thread; i++) {
@@ -57,7 +65,8 @@ void DenseMatrix::uniform(real a, unsigned int thread, int32_t seed) {
   }
 }
 
-void DenseMatrix::multiplyRow(const Vector& nums, int64_t ib, int64_t ie) {
+void DenseMatrix::multiplyRow(const Vector& nums, int64_t ib, int64_t ie)
+{
   if (ie == -1) {
     ie = m_;
   }
@@ -72,7 +81,8 @@ void DenseMatrix::multiplyRow(const Vector& nums, int64_t ib, int64_t ie) {
   }
 }
 
-void DenseMatrix::divideRow(const Vector& denoms, int64_t ib, int64_t ie) {
+void DenseMatrix::divideRow(const Vector& denoms, int64_t ib, int64_t ie)
+{
   if (ie == -1) {
     ie = m_;
   }
@@ -87,7 +97,8 @@ void DenseMatrix::divideRow(const Vector& denoms, int64_t ib, int64_t ie) {
   }
 }
 
-real DenseMatrix::l2NormRow(int64_t i) const {
+real DenseMatrix::l2NormRow(int64_t i) const
+{
   auto norm = 0.0;
   for (auto j = 0; j < n_; j++) {
     norm += at(i, j) * at(i, j);
@@ -98,14 +109,16 @@ real DenseMatrix::l2NormRow(int64_t i) const {
   return std::sqrt(norm);
 }
 
-void DenseMatrix::l2NormRow(Vector& norms) const {
+void DenseMatrix::l2NormRow(Vector& norms) const
+{
   assert(norms.size() == m_);
   for (auto i = 0; i < m_; i++) {
     norms[i] = l2NormRow(i);
   }
 }
 
-real DenseMatrix::dotRow(const Vector& vec, int64_t i) const {
+real DenseMatrix::dotRow(const Vector& vec, int64_t i) const
+{
   assert(i >= 0);
   assert(i < m_);
   assert(vec.size() == n_);
@@ -119,7 +132,8 @@ real DenseMatrix::dotRow(const Vector& vec, int64_t i) const {
   return d;
 }
 
-void DenseMatrix::addVectorToRow(const Vector& vec, int64_t i, real a) {
+void DenseMatrix::addVectorToRow(const Vector& vec, int64_t i, real a)
+{
   assert(i >= 0);
   assert(i < m_);
   assert(vec.size() == n_);
@@ -128,7 +142,8 @@ void DenseMatrix::addVectorToRow(const Vector& vec, int64_t i, real a) {
   }
 }
 
-void DenseMatrix::addRowToVector(Vector& x, int32_t i) const {
+void DenseMatrix::addRowToVector(Vector& x, int32_t i) const
+{
   assert(i >= 0);
   assert(i < this->size(0));
   assert(x.size() == this->size(1));
@@ -137,7 +152,8 @@ void DenseMatrix::addRowToVector(Vector& x, int32_t i) const {
   }
 }
 
-void DenseMatrix::addRowToVector(Vector& x, int32_t i, real a) const {
+void DenseMatrix::addRowToVector(Vector& x, int32_t i, real a) const
+{
   assert(i >= 0);
   assert(i < this->size(0));
   assert(x.size() == this->size(1));
@@ -146,20 +162,23 @@ void DenseMatrix::addRowToVector(Vector& x, int32_t i, real a) const {
   }
 }
 
-void DenseMatrix::save(std::ostream& out) const {
+void DenseMatrix::save(std::ostream& out) const
+{
   out.write((char*)&m_, sizeof(int64_t));
   out.write((char*)&n_, sizeof(int64_t));
   out.write((char*)data_.data(), m_ * n_ * sizeof(real));
 }
 
-void DenseMatrix::load(std::istream& in) {
+void DenseMatrix::load(std::istream& in)
+{
   in.read((char*)&m_, sizeof(int64_t));
   in.read((char*)&n_, sizeof(int64_t));
   data_ = std::vector<real>(m_ * n_);
   in.read((char*)data_.data(), m_ * n_ * sizeof(real));
 }
 
-void DenseMatrix::dump(std::ostream& out) const {
+void DenseMatrix::dump(std::ostream& out) const
+{
   out << m_ << " " << n_ << std::endl;
   for (int64_t i = 0; i < m_; i++) {
     for (int64_t j = 0; j < n_; j++) {

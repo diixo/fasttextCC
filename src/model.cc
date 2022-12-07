@@ -21,13 +21,15 @@ Model::State::State(int32_t hiddenSize, int32_t outputSize, int32_t seed)
       hidden(hiddenSize),
       output(outputSize),
       grad(hiddenSize),
-      rng(seed) {}
+      rng(seed)
+{}
 
 real Model::State::getLoss() const {
   return lossValue_ / nexamples_;
 }
 
-void Model::State::incrementNExamples(real loss) {
+void Model::State::incrementNExamples(real loss)
+{
   lossValue_ += loss;
   nexamples_++;
 }
@@ -37,10 +39,12 @@ Model::Model(
     std::shared_ptr<Matrix> wo,
     std::shared_ptr<Loss> loss,
     bool normalizeGradient)
-    : wi_(wi), wo_(wo), loss_(loss), normalizeGradient_(normalizeGradient) {}
+    : wi_(wi), wo_(wo), loss_(loss), normalizeGradient_(normalizeGradient)
+{}
 
 void Model::computeHidden(const std::vector<int32_t>& input, State& state)
-    const {
+    const
+{
   Vector& hidden = state.hidden;
   hidden.zero();
   for (auto it = input.cbegin(); it != input.cend(); ++it) {
@@ -54,7 +58,8 @@ void Model::predict(
     int32_t k,
     real threshold,
     Predictions& heap,
-    State& state) const {
+    State& state) const
+{
   if (k == Model::kUnlimitedPredictions) {
     k = wo_->size(0); // output size
   } else if (k <= 0) {
@@ -71,7 +76,8 @@ void Model::update(
     const std::vector<int32_t>& targets,
     int32_t targetIndex,
     real lr,
-    State& state) {
+    State& state)
+{
   if (input.size() == 0) {
     return;
   }

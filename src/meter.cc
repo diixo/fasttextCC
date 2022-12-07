@@ -21,12 +21,14 @@ constexpr real falseNegativeScore = -1.0;
 
 void Meter::log(
     const std::vector<int32_t>& labels,
-    const Predictions& predictions) {
+    const Predictions& predictions)
+{
   nexamples_++;
   metrics_.gold += labels.size();
   metrics_.predicted += predictions.size();
 
-  for (const auto& prediction : predictions) {
+  for (const auto& prediction : predictions)
+  {
     labelMetrics_[prediction.second].predicted++;
 
     real score = std::min(std::exp(prediction.first), 1.0f);
@@ -69,7 +71,8 @@ double Meter::recall() const {
   return metrics_.recall();
 }
 
-double Meter::f1Score() const {
+double Meter::f1Score() const
+{
   const double precision = this->precision();
   const double recall = this->recall();
   if (precision + recall != 0) {
@@ -78,7 +81,8 @@ double Meter::f1Score() const {
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-void Meter::writeGeneralMetrics(std::ostream& out, int32_t k) const {
+void Meter::writeGeneralMetrics(std::ostream& out, int32_t k) const
+{
   out << "N"
       << "\t" << nexamples_ << std::endl;
   out << std::setprecision(3);
@@ -87,7 +91,8 @@ void Meter::writeGeneralMetrics(std::ostream& out, int32_t k) const {
 }
 
 std::vector<std::pair<uint64_t, uint64_t>> Meter::getPositiveCounts(
-    int32_t labelId) const {
+    int32_t labelId) const
+{
   std::vector<std::pair<uint64_t, uint64_t>> positiveCounts;
 
   const auto& v = scoreVsTrue(labelId);
@@ -117,11 +122,13 @@ std::vector<std::pair<uint64_t, uint64_t>> Meter::getPositiveCounts(
   return positiveCounts;
 }
 
-double Meter::precisionAtRecall(double recallQuery) const {
+double Meter::precisionAtRecall(double recallQuery) const
+{
   return precisionAtRecall(kAllLabels, recallQuery);
 }
 
-double Meter::precisionAtRecall(int32_t labelId, double recallQuery) const {
+double Meter::precisionAtRecall(int32_t labelId, double recallQuery) const
+{
   const auto& precisionRecall = precisionRecallCurve(labelId);
   double bestPrecision = 0.0;
   std::for_each(
@@ -135,17 +142,20 @@ double Meter::precisionAtRecall(int32_t labelId, double recallQuery) const {
   return bestPrecision;
 }
 
-double Meter::recallAtPrecision(double precisionQuery) const {
+double Meter::recallAtPrecision(double precisionQuery) const
+{
   return recallAtPrecision(kAllLabels, precisionQuery);
 }
 
-double Meter::recallAtPrecision(int32_t labelId, double precisionQuery) const {
+double Meter::recallAtPrecision(int32_t labelId, double precisionQuery) const
+{
   const auto& precisionRecall = precisionRecallCurve(labelId);
   double bestRecall = 0.0;
   std::for_each(
       precisionRecall.begin(),
       precisionRecall.end(),
-      [&bestRecall, precisionQuery](const std::pair<double, double>& element) {
+      [&bestRecall, precisionQuery](const std::pair<double, double>& element)
+  {
         if (element.first >= precisionQuery) {
           bestRecall = std::max(bestRecall, element.second);
         };
@@ -153,12 +163,14 @@ double Meter::recallAtPrecision(int32_t labelId, double precisionQuery) const {
   return bestRecall;
 }
 
-std::vector<std::pair<double, double>> Meter::precisionRecallCurve() const {
+std::vector<std::pair<double, double>> Meter::precisionRecallCurve() const
+{
   return precisionRecallCurve(kAllLabels);
 }
 
 std::vector<std::pair<double, double>> Meter::precisionRecallCurve(
-    int32_t labelId) const {
+    int32_t labelId) const
+{
   std::vector<std::pair<double, double>> precisionRecallCurve;
   const auto& positiveCounts = getPositiveCounts(labelId);
   if (positiveCounts.empty()) {
@@ -194,7 +206,8 @@ std::vector<std::pair<double, double>> Meter::precisionRecallCurve(
   return precisionRecallCurve;
 }
 
-std::vector<std::pair<real, real>> Meter::scoreVsTrue(int32_t labelId) const {
+std::vector<std::pair<real, real>> Meter::scoreVsTrue(int32_t labelId) const
+{
   std::vector<std::pair<real, real>> ret;
   if (labelId == kAllLabels) {
     for (const auto& k : labelMetrics_) {
