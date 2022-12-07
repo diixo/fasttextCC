@@ -10,9 +10,13 @@
 #include <iostream>
 #include <queue>
 #include <stdexcept>
+#include <codecvt>
+#include <locale>
+
 #include "args.h"
 #include "autotune.h"
 #include "fasttext.h"
+#include "strutils.h"
 
 using namespace fasttext;
 
@@ -158,7 +162,7 @@ void test(const std::vector<std::string>& args)
   const auto& model = args[2];
   const auto& input = args[3];
   int32_t k = args.size() > 4 ? std::stoi(args[4]) : 1;
-  real threshold = args.size() > 5 ? std::stof(args[5]) : 0.0;
+  real threshold = args.size() > 5 ? std::stof(args[5]) : 0.f;
 
   FastText fasttext;
   fasttext.loadModel(model);
@@ -167,13 +171,14 @@ void test(const std::vector<std::string>& args)
 
   if (input == "-")
   {
-    fasttext.test(std::cin, k, threshold, meter);
+    fasttext.test(std::wcin, k, threshold, meter);
   } else {
-    std::ifstream ifs(input);
+    std::wifstream ifs(cstr_to_wstr(input));
     if (!ifs.is_open()) {
       std::cerr << "Test file cannot be opened!" << std::endl;
       exit(EXIT_FAILURE);
     }
+    ifs.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
     fasttext.test(ifs, k, threshold, meter);
   }
 
@@ -249,17 +254,17 @@ void predict(const std::vector<std::string>& args)
   FastText fasttext;
   fasttext.loadModel(std::string(args[2]));
 
-  std::ifstream ifs;
+  std::wifstream ifs;
   std::string infile(args[3]);
   bool inputIsStdIn = infile == "-";
   if (!inputIsStdIn) {
-    ifs.open(infile);
+    ifs.open(cstr_to_wstr(infile));
     if (!inputIsStdIn && !ifs.is_open()) {
       std::cerr << "Input file cannot be opened!" << std::endl;
       exit(EXIT_FAILURE);
     }
   }
-  std::istream& in = inputIsStdIn ? std::cin : ifs;
+  std::wistream& in = inputIsStdIn ? std::wcin : ifs;
   std::vector<std::pair<real, std::string>> predictions;
   while (fasttext.predictLine(in, predictions, k, threshold)) {
     printPredictions(predictions, printProb, false);
@@ -297,8 +302,8 @@ void printSentenceVectors(const std::vector<std::string> args)
   FastText fasttext;
   fasttext.loadModel(std::string(args[2]));
   Vector svec(fasttext.getDimension());
-  while (std::cin.peek() != EOF) {
-    fasttext.getSentenceVector(std::cin, svec);
+  while (std::wcin.peek() != EOF) {
+    fasttext.getSentenceVector(std::wcin, svec);
     // Don't print sentence
     std::cout << svec << std::endl;
   }

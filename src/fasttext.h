@@ -121,14 +121,14 @@ class FastText {
 
   void loadModel(const std::string& filename);
 
-  void getSentenceVector(std::istream& in, Vector& vec);
+  void getSentenceVector(std::wistream& in, Vector& vec);
 
   void quantize(const Args& qargs, const TrainCallback& callback = {});
 
   std::tuple<int64_t, double, double>
-  test(std::istream& in, int32_t k, real threshold = 0.0);
+  test(std::wistream& in, int32_t k, real threshold = 0.0);
 
-  void test(std::istream& in, int32_t k, real threshold, Meter& meter) const;
+  void test(std::wistream& in, int32_t k, real threshold, Meter& meter) const;
 
   void predict(
       int32_t k,
@@ -137,7 +137,7 @@ class FastText {
       real threshold = 0.0) const;
 
   bool predictLine(
-      std::istream& in,
+      std::wistream& in,
       std::vector<std::pair<real, std::string>>& predictions,
       int32_t k,
       real threshold) const;

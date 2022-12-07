@@ -7,6 +7,7 @@
  */
 
 #include "autotune.h"
+#include "strutils.h"
 
 #include <algorithm>
 #include <csignal>
@@ -15,6 +16,8 @@
 #include <iostream>
 #include <random>
 #include <thread>
+#include <codecvt>
+#include <locale>
 
 #define LOG_VAL(name, val)                        \
   if (autotuneArgs.verbose > 2) {                 \
@@ -381,7 +384,8 @@ void Autotune::printSkippedArgs(const Args& autotuneArgs) {
 }
 
 void Autotune::train(const Args& autotuneArgs) {
-  std::ifstream validationFileStream(autotuneArgs.autotuneValidationFile);
+  std::wifstream validationFileStream(cstr_to_wstr(autotuneArgs.autotuneValidationFile));
+  validationFileStream.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
   if (!validationFileStream.is_open()) {
     throw std::invalid_argument("Validation file cannot be opened!");
   }

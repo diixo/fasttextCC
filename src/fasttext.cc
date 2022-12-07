@@ -9,6 +9,7 @@
 #include "fasttext.h"
 #include "loss.h"
 #include "quantmatrix.h"
+#include "strutils.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -19,6 +20,9 @@
 #include <string>
 #include <thread>
 #include <vector>
+
+#include <codecvt>
+#include <sstream>
 
 namespace fasttext {
 
@@ -449,7 +453,7 @@ void FastText::skipgram(
 }
 
 std::tuple<int64_t, double, double>
-FastText::test(std::istream& in, int32_t k, real threshold)
+FastText::test(std::wistream& in, int32_t k, real threshold)
 {
   Meter meter(false);
   test(in, k, threshold, meter);
@@ -458,7 +462,7 @@ FastText::test(std::istream& in, int32_t k, real threshold)
       meter.nexamples(), meter.precision(), meter.recall());
 }
 
-void FastText::test(std::istream& in, int32_t k, real threshold, Meter& meter)
+void FastText::test(std::wistream& in, int32_t k, real threshold, Meter& meter)
     const {
   std::vector<int32_t> line;
   std::vector<int32_t> labels;
@@ -497,7 +501,7 @@ void FastText::predict(
 }
 
 bool FastText::predictLine(
-    std::istream& in,
+    std::wistream& in,
     std::vector<std::pair<real, std::string>>& predictions,
     int32_t k,
     real threshold) const
@@ -519,7 +523,7 @@ bool FastText::predictLine(
   return true;
 }
 
-void FastText::getSentenceVector(std::istream& in, fasttext::Vector& svec)
+void FastText::getSentenceVector(std::wistream& in, fasttext::Vector& svec)
 {
   svec.zero();
   if (args_->model == model_name::sup) {
@@ -533,13 +537,13 @@ void FastText::getSentenceVector(std::istream& in, fasttext::Vector& svec)
     }
   } else {
     Vector vec(args_->dim);
-    std::string sentence;
+    std::wstring sentence;
     std::getline(in, sentence);
-    std::istringstream iss(sentence);
-    std::string word;
+    std::wistringstream iss(sentence);
+    std::wstring wword;
     int32_t count = 0;
-    while (iss >> word) {
-      getWordVector(vec, word);
+    while (iss >> wword) {
+      getWordVector(vec, translate_wstr(wword));
       real norm = vec.norm();
       if (norm > 0) {
         vec.mul(1.0 / norm);
@@ -671,6 +675,7 @@ bool FastText::keepTraining(const int64_t ntokens) const
 
 void FastText::trainThread(int32_t threadId, const TrainCallback& callback)
 {
+   /*
   std::ifstream ifs(args_->input);
   utils::seek(ifs, threadId * utils::size(ifs) / args_->thread);
 
@@ -716,6 +721,7 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback)
   if (threadId == 0)
     loss_ = state.getLoss();
   ifs.close();
+  */
 }
 
 std::shared_ptr<Matrix> FastText::getInputMatrixFromFile(
@@ -795,17 +801,27 @@ void FastText::train(const Args& args, const TrainCallback& callback)
   if (!(args_->stopwords.empty()))
   {
       auto s_arg = std::make_shared<Args>(args);
-      stopwords_ = std::make_shared<Dictionary>(s_arg);
       s_arg->minCount = 1;
-      stopwords_->readFromFile(args_->stopwords, nullptr);
+      stopwords_ = std::make_shared<Dictionary>(s_arg);
+
+      std::wifstream wsw(cstr_to_wstr(args_->stopwords));
+      if (!wsw.is_open()) {
+         throw std::invalid_argument(
+            args_->stopwords + " cannot be opened for reading!");
+      }
+      wsw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+      stopwords_->readFromFile(wsw, nullptr);
+      wsw.close();
   }
-  std::ifstream ifs(args_->input);
-  if (!ifs.is_open()) {
+
+  std::wifstream wis(cstr_to_wstr(args_->input));
+  if (!wis.is_open()) {
     throw std::invalid_argument(
         args_->input + " cannot be opened for training!");
   }
-  dict_->readFromFile(args_->input, stopwords_);
-  ifs.close();
+  wis.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+  dict_->readFromFile(wis, stopwords_);
+  wis.close();
 
   if (!args_->pretrainedVectors.empty()) {
     input_ = getInputMatrixFromFile(args_->pretrainedVectors);

@@ -4,7 +4,7 @@
 
 const wchar_t apostrophe = 0x0027;
 
-std::wstring utf8_to_utf16(const std::string& utf8)
+std::wstring convert_utf8_to_utf16(const std::string& utf8)
 {
    std::vector<unsigned long> unicode;
    size_t i = 0;
@@ -77,9 +77,8 @@ std::wstring utf8_to_utf16(const std::string& utf8)
 }
 
 
-std::wstring cstr_to_wstr(const char* c_str)
+std::wstring cstr_to_wstr(const std::string& cstr)
 {
-   std::string cstr(c_str);
    return std::wstring(cstr.begin(), cstr.end());
 }
 
@@ -148,29 +147,29 @@ bool isCharApostrophe(const wchar_t ch)
    return false;
 }
 
-std::wstring& ltrim(std::wstring& inStr, const std::wstring& Delim)
+std::wstring& ltrim(std::wstring& input, const std::wstring& delim)
 {
-   inStr.erase(0, inStr.find_first_not_of(Delim));
-   return inStr;
+   input.erase(0, input.find_first_not_of(delim));
+   return input;
 }
 
-std::wstring& rtrim(std::wstring& inStr, const std::wstring& Delim)
+std::wstring& rtrim(std::wstring& input, const std::wstring& delim)
 {
-   inStr.erase(inStr.find_last_not_of(Delim) + 1);
-   return inStr;
+   input.erase(input.find_last_not_of(delim) + 1);
+   return input;
 }
 
-std::wstring& trim(std::wstring& inStr, const std::wstring& Delim)
+std::wstring& trim(std::wstring& input, const std::wstring& delim)
 {
-   return ltrim(rtrim(inStr, Delim), Delim);
+   return ltrim(rtrim(input, delim), delim);
 }
 
-bool is_digit(const std::wstring& inStr, size_t start_id)
+bool is_digit(const std::wstring& input, size_t start_id)
 {
-   bool result = (start_id < inStr.size());
-   while (start_id < inStr.size())
+   bool result = (start_id < input.size());
+   while (start_id < input.size())
    {
-      if (!iswdigit(inStr[start_id]))
+      if (!iswdigit(input[start_id]))
       {
          result = false;
          break;
@@ -180,12 +179,12 @@ bool is_digit(const std::wstring& inStr, size_t start_id)
    return result;
 }
 
-bool is_anydigit(const std::wstring& inStr, size_t start_id)
+bool is_anydigit(const std::wstring& input, size_t start_id)
 {
    bool result = false;
-   while (start_id < inStr.size())
+   while (start_id < input.size())
    {
-      if (iswdigit(inStr[start_id]))
+      if (iswdigit(input[start_id]))
       {
          result = true;
          break;
@@ -233,14 +232,15 @@ wchar_t translateChar(const wchar_t ch)
       }
       return space;
    }
+   return ch;
 }
 
-std::string translate_str(const std::wstring& wstr)
+std::string translate_wstr(const std::wstring& wstr)
 {
    std::string sstr;
-   for (auto it = wstr.begin(); it != wstr.end(); ++it)
+   for (auto it: wstr)
    {
-      char ch = static_cast<char>(translateChar(*it));
+      const char ch = static_cast<char>(translateChar(it));
       if (ch) sstr.push_back(ch);
    }
    return sstr;

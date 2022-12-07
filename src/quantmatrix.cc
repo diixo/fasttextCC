@@ -53,7 +53,7 @@ real QuantMatrix::dotRow(const Vector& vec, int64_t i) const {
   assert(i >= 0);
   assert(i < m_);
   assert(vec.size() == n_);
-  real norm = 1;
+  real norm = 1.f;
   if (qnorm_) {
     norm = npq_->get_centroids(0, norm_codes_[i])[0];
   }
@@ -65,7 +65,7 @@ void QuantMatrix::addVectorToRow(const Vector&, int64_t, real) {
 }
 
 void QuantMatrix::addRowToVector(Vector& x, int32_t i, real a) const {
-  real norm = 1;
+  real norm = 1.f;
   if (qnorm_) {
     norm = npq_->get_centroids(0, norm_codes_[i])[0];
   }
@@ -73,7 +73,7 @@ void QuantMatrix::addRowToVector(Vector& x, int32_t i, real a) const {
 }
 
 void QuantMatrix::addRowToVector(Vector& x, int32_t i) const {
-  real norm = 1;
+  real norm = 1.f;
   if (qnorm_) {
     norm = npq_->get_centroids(0, norm_codes_[i])[0];
   }

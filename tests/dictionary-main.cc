@@ -1,28 +1,42 @@
 
 #include "dictionary.h"
+#include "strutils.h"
 #include "args.h"
 
 #include <memory>
 #include <iostream>
 #include <fstream>
 
+#include <codecvt>
+#include <locale>
+
+const int VOCAB_SZ = 547;
+
 int main()
 {
-   const int VOCAB_SZ = 547;
-
    auto args = std::make_shared<fasttext::Args>();
    args->minCount = 1;
 
    auto stopwords = std::make_shared<fasttext::Dictionary>(args, VOCAB_SZ);
-   //stopwords->readFromFile(std::ifstream("stopwords.txt"), nullptr);
-   stopwords->readFromFile("stopwords.txt", nullptr);
+   {
+      std::wifstream wsw(L"stopwords.txt");
+      wsw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+      stopwords->readFromFile(wsw, nullptr);
+      wsw.close();
 
-   stopwords->dump(std::cout);
+      stopwords->dump(std::cout);
+   }
+
 
    fasttext::Dictionary dictionary(args, VOCAB_SZ);
-   dictionary.readFromFile(std::ifstream("train-data.txt"), stopwords);
+   {
+      std::wifstream wsw(L"train-data.txt");
+      wsw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+      dictionary.readFromFile(wsw, stopwords);
+      wsw.close();
 
-   dictionary.dump(std::cout);
+      dictionary.dump(std::cout);
+   }
 
    return 0;
 }

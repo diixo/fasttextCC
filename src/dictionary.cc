@@ -71,8 +71,11 @@ int32_t Dictionary::find(const std::string& w, uint32_t h) const
   int32_t word2intsize = word2int_.size();
   int32_t id = h % word2intsize;
 
-  while (word2int_[id] != -1 && words_[word2int_[id]].word != w) {
-    id = (id + 1) % word2intsize;
+  while (word2int_[id] != -1 && words_[word2int_[id]].word != w)
+  {
+     if ((id + 1) < word2intsize)
+        id = (id + 1) % word2intsize;
+     else return false;
   }
   return id;
 }
@@ -87,8 +90,11 @@ bool Dictionary::find(const std::string& w) const
    int32_t word2intsize = word2int_.size();
    int32_t id = hash(w) % word2intsize;
 
-   while (word2int_[id] != -1 && words_[word2int_[id]].word != w) {
-      id = (id + 1) % word2intsize;
+   while (word2int_[id] != -1 && words_[word2int_[id]].word != w)
+   {
+      if ((id + 1) < word2intsize)
+         id = (id + 1) % word2intsize;
+      else return false;
    }
    return (word2int_[id] > 0) && (words_[word2int_[id]].word == w);
 }
@@ -250,61 +256,7 @@ void Dictionary::initNgrams()
   }
 }
 
-bool Dictionary::checkCoding(const int c) const
-{
-   assert(EOF == -1);
-
-   static int ch1 = -1; // EOF
-   static int ch2 = -1; // EOF
-   static int ch3 = -1; // EOF
-
-   if (c == -1)
-   {
-      ch1 = -1;
-      ch2 = -1;
-      ch3 = -1;
-      return false;
-   }
-
-   if (ch1 == -1)
-   {
-      ch1 = c;
-      return true;
-   }
-
-   if (ch1 != -1 && ch2 == -1)
-   {
-      ch2 = c;
-      if (ch1 == 0xff && ch2 == 0xfe)
-      {
-         // UTF-16LE_BOM
-         return false;
-      }
-      else if (ch1 == 0xfe && ch2 == 0xff)
-      {
-         // UTF-16BE_BOM
-         return false;
-      }
-      return true;
-   }
-   else
-   {
-      if (ch3 == -1)
-      {
-         ch3 = c;
-
-         if (ch1 == 0xef && ch2 == 0xbb && ch3 == 0xbf)
-            return false; // UTF8_BOM
-         else
-            // ASCII without BOM
-            return true;
-            //ifs.seekg(0);
-      }
-   }
-   return true;
-}
-
-bool Dictionary::readWord(std::wistream& in, std::wstring& word) const
+bool Dictionary::readWord(std::wistream& in, std::string& word) const
 {
    static int unget_ch = 0;
 
@@ -315,7 +267,7 @@ bool Dictionary::readWord(std::wistream& in, std::wstring& word) const
   if (unget_ch > 0)
   {
      unget_ch = 0;
-     word = L"</s>";
+     word = "</s>";
      return true;
   }
   unget_ch = 0;
@@ -326,7 +278,7 @@ bool Dictionary::readWord(std::wistream& in, std::wstring& word) const
     {
       if (word.empty()) {
         if (c == '\n') {
-          word += L"</s>";
+          word += "</s>";
           return true;
         }
         continue;
@@ -336,97 +288,23 @@ bool Dictionary::readWord(std::wistream& in, std::wstring& word) const
         return true;
       }
     }
-    word.push_back(c);
-  }
-  // trigger eofbit
-  in.get();
-  return !word.empty();
-}
-
-bool Dictionary::readWord(std::istream& in, std::string& word) const
-{
-  int c;
-  std::streambuf& sb = *in.rdbuf();
-  word.clear();
-  while ((c = sb.sbumpc()) != EOF)
-  {
-     const bool check = checkCoding(c);
-
-    if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
-        c == '\f' || c == '\0')
+    c = translateChar(c);
+    if (c > 0)
     {
-      if (word.empty()) {
-        if (c == '\n') {
-          word += EOS;
-          return true;
-        }
-        continue;
-      } else {
-         if (c == '\n') {
-            sb.sungetc();
-         }
-        return true;
-      }
+      word.push_back(c);
     }
-    word.push_back(c);
-    if (!check)
-       word.clear();
   }
   // trigger eofbit
   in.get();
   return !word.empty();
 }
 
-void Dictionary::readFromFile(const std::string& input, std::shared_ptr<Dictionary> stopwords)
-{
-   std::wifstream wisw(cstr_to_wstr(input.c_str()));
-   if (!wisw.is_open()) return;
-   wisw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
-
-   std::string word;
-   int64_t minThreshold = 1;
-
-   std::wstring wword;
-   while (readWord(wisw, wword))
-   {
-      word = translate_str(wword);
-
-      bool bf = stopwords && stopwords->find(word);
-
-      if (!bf)
-      {
-         add(word);
-      }
-      if ((ntokens_ % 1000000 == 0) && (ntokens_ > 1000000) && (args_->verbose > 1)) {
-         std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::flush;
-      }
-      if (size_ > 0.75 * MAX_VOCAB_SIZE) {
-         minThreshold++;
-         threshold(minThreshold, minThreshold);
-      }
-   }
-   wisw.close();
-
-   threshold(args_->minCount, args_->minCountLabel);
-   initTableDiscard();
-   initNgrams();
-   if (args_->verbose > 0) {
-      std::cerr << "-----------------" << std::endl;
-      std::cerr << "\rRead " << ntokens_ << " words" << std::endl;
-      //std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::endl;
-      std::cerr << "Number of words:  " << nwords_ << std::endl;
-      std::cerr << "Number of labels: " << nlabels_ << std::endl;
-   }
-   if (size_ == 0) {
-      throw std::invalid_argument("Empty vocabulary. Try a smaller -minCount value.");
-   }
-}
-
-void Dictionary::readFromFile(std::istream& in, std::shared_ptr<Dictionary> stopwords)
+void Dictionary::readFromFile(std::wistream& wis, std::shared_ptr<Dictionary> stopwords)
 {
    std::string word;
    int64_t minThreshold = 1;
-   while (readWord(in, word))
+
+   while (readWord(wis, word))
    {
       bool bf = stopwords && stopwords->find(word);
 
@@ -442,7 +320,6 @@ void Dictionary::readFromFile(std::istream& in, std::shared_ptr<Dictionary> stop
          threshold(minThreshold, minThreshold);
       }
    }
-   checkCoding(EOF);
    threshold(args_->minCount, args_->minCountLabel);
    initTableDiscard();
    initNgrams();
@@ -545,7 +422,7 @@ void Dictionary::addSubwords(
   }
 }
 
-void Dictionary::reset(std::istream& in) const
+void Dictionary::reset(std::wistream& in) const
 {
   if (in.eof()) {
     in.clear();
@@ -554,7 +431,7 @@ void Dictionary::reset(std::istream& in) const
 }
 
 int32_t Dictionary::getLine(
-    std::istream& in,
+    std::wistream& in,
     std::vector<int32_t>& words,
     std::minstd_rand& rng) const
 {
@@ -583,7 +460,7 @@ int32_t Dictionary::getLine(
 }
 
 int32_t Dictionary::getLine(
-    std::istream& in,
+    std::wistream& in,
     std::vector<int32_t>& words,
     std::vector<int32_t>& labels) const
 {

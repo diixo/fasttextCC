@@ -38,10 +38,9 @@ class Dictionary {
 
   int32_t find_id(const std::string&) const;
   int32_t find(const std::string&, uint32_t h) const;
-  bool checkCoding(const int c) const;
   void initTableDiscard();
   void initNgrams();
-  void reset(std::istream&) const;
+  void reset(std::wistream&) const;
   void pushHash(std::vector<int32_t>&, int32_t) const;
   void addSubwords(std::vector<int32_t>&, const std::string&, int32_t) const;
 
@@ -92,17 +91,15 @@ class Dictionary {
       std::vector<std::string>* substrings = nullptr) const;
   uint32_t hash(const std::string& str) const;
   void add(const std::string&);
-  bool readWord(std::wistream& in, std::wstring& word) const;
-  bool readWord(std::istream&, std::string&) const;
-  void readFromFile(std::istream&, std::shared_ptr<Dictionary>);
-  void readFromFile(const std::string& input, std::shared_ptr<Dictionary> stopwords);
+  bool readWord(std::wistream& in, std::string& word) const;
+  void readFromFile(std::wistream&, std::shared_ptr<Dictionary>);
   std::string getLabel(int32_t) const;
   void save(std::ostream&) const;
   void load(std::istream&);
   std::vector<int64_t> getCounts(entry_type) const;
-  int32_t getLine(std::istream&, std::vector<int32_t>&, std::vector<int32_t>&)
+  int32_t getLine(std::wistream&, std::vector<int32_t>&, std::vector<int32_t>&)
       const;
-  int32_t getLine(std::istream&, std::vector<int32_t>&, std::minstd_rand&)
+  int32_t getLine(std::wistream&, std::vector<int32_t>&, std::minstd_rand&)
       const;
   void threshold(int64_t, int64_t);
   void prune(std::vector<int32_t>&);
