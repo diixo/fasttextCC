@@ -31,7 +31,8 @@
 
 namespace fasttext {
 
-class FastText {
+class FastText
+{
  public:
   using TrainCallback =
       std::function<void(float, float, double, double, int64_t)>;

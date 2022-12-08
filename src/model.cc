@@ -24,7 +24,8 @@ Model::State::State(int32_t hiddenSize, int32_t outputSize, int32_t seed)
       rng(seed)
 {}
 
-real Model::State::getLoss() const {
+real Model::State::getLoss() const
+{
   return lossValue_ / nexamples_;
 }
 
@@ -49,7 +50,8 @@ void Model::computeHidden(const std::vector<int32_t>& input, State& state) const
 {
   Vector& hidden = state.hidden;
   hidden.zero();
-  for (auto it = input.cbegin(); it != input.cend(); ++it) {
+  for (auto it = input.cbegin(); it != input.cend(); ++it)
+  {
     hidden.addRow(*wi_, *it);
   }
   hidden.mul(1.0 / input.size());
@@ -64,7 +66,8 @@ void Model::predict(
 {
   if (k == Model::kUnlimitedPredictions) {
     k = wo_->size(0); // output size
-  } else if (k <= 0) {
+  }
+  else if (k <= 0) {
     throw std::invalid_argument("k needs to be 1 or higher!");
   }
   heap.reserve(k + 1);
@@ -90,15 +93,18 @@ void Model::update(
   real lossValue = loss_->forward(targets, targetIndex, state, lr, true);
   state.incrementNExamples(lossValue);
 
-  if (normalizeGradient_) {
+  if (normalizeGradient_)
+  {
     grad.mul(1.0 / input.size());
   }
-  for (auto it = input.cbegin(); it != input.cend(); ++it) {
+  for (auto it = input.cbegin(); it != input.cend(); ++it)
+  {
     wi_->addVectorToRow(grad, *it, 1.0);
   }
 }
 
-real Model::std_log(real x) const {
+real Model::std_log(real x) const
+{
   return std::log(x + 1e-5);
 }
 

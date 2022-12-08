@@ -27,7 +27,8 @@ enum class metric_name : int {
   recallAtPrecisionLabel
 };
 
-class Args {
+class Args
+{
  protected:
   std::string boolToString(bool) const;
   std::string modelToString(model_name) const;

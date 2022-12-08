@@ -124,7 +124,8 @@ void Args::parseArgs(const std::vector<std::string>& args)
     minn = 0;
     maxn = 0;
     lr = 0.1;
-  } else if (command == "cbow") {
+  }
+  else if (command == "cbow") {
     model = model_name::cbow;
   }
   for (size_t ai = 2; ai < args.size(); ai += 2)
@@ -168,7 +169,9 @@ void Args::parseArgs(const std::vector<std::string>& args)
         neg = std::stoi(args.at(ai1));
       } else if (args[ai] == "-wordNgrams") {
         wordNgrams = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-loss") {
+      }
+      else if (args[ai] == "-loss")
+      {
         if (args.at(ai1) == "hs") {
           loss = loss_name::hs;
         } else if (args.at(ai1) == "ns") {
@@ -183,58 +186,80 @@ void Args::parseArgs(const std::vector<std::string>& args)
           printHelp();
           exit(EXIT_FAILURE);
         }
-      } else if (args[ai] == "-bucket") {
+      }
+      else if (args[ai] == "-bucket") {
         bucket = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-minn") {
+      }
+      else if (args[ai] == "-minn") {
         minn = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-maxn") {
+      }
+      else if (args[ai] == "-maxn") {
         maxn = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-thread") {
+      }
+      else if (args[ai] == "-thread") {
         thread = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-t") {
+      }
+      else if (args[ai] == "-t") {
         t = std::stof(args.at(ai1));
-      } else if (args[ai] == "-label") {
+      }
+      else if (args[ai] == "-label") {
         label = std::string(args.at(ai1));
-      } else if (args[ai] == "-verbose") {
+      }
+      else if (args[ai] == "-verbose") {
         verbose = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-pretrainedVectors") {
+      }
+      else if (args[ai] == "-pretrainedVectors") {
         pretrainedVectors = std::string(args.at(ai1));
-      } else if (args[ai] == "-saveOutput") {
+      }
+      else if (args[ai] == "-saveOutput") {
         saveOutput = true;
         ai--;
-      } else if (args[ai] == "-seed") {
+      }
+      else if (args[ai] == "-seed") {
         seed = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-qnorm") {
+      }
+      else if (args[ai] == "-qnorm") {
         qnorm = true;
         ai--;
-      } else if (args[ai] == "-retrain") {
+      }
+      else if (args[ai] == "-retrain") {
         retrain = true;
         ai--;
-      } else if (args[ai] == "-qout") {
+      }
+      else if (args[ai] == "-qout") {
         qout = true;
         ai--;
-      } else if (args[ai] == "-cutoff") {
+      }
+      else if (args[ai] == "-cutoff") {
         cutoff = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-dsub") {
+      }
+      else if (args[ai] == "-dsub") {
         dsub = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-autotune-validation") {
+      }
+      else if (args[ai] == "-autotune-validation") {
         autotuneValidationFile = std::string(args.at(ai1));
-      } else if (args[ai] == "-autotune-metric") {
+      }
+      else if (args[ai] == "-autotune-metric") {
         autotuneMetric = std::string(args.at(ai1));
         getAutotuneMetric(); // throws exception if not able to parse
         getAutotuneMetricLabel(); // throws exception if not able to parse
-      } else if (args[ai] == "-autotune-predictions") {
+      }
+      else if (args[ai] == "-autotune-predictions") {
         autotunePredictions = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-autotune-duration") {
+      }
+      else if (args[ai] == "-autotune-duration") {
         autotuneDuration = std::stoi(args.at(ai1));
-      } else if (args[ai] == "-autotune-modelsize") {
+      }
+      else if (args[ai] == "-autotune-modelsize") {
         autotuneModelSize = std::string(args.at(ai1));
-      } else {
+      }
+      else {
         std::cerr << "Unknown argument: " << args[ai] << std::endl;
         printHelp();
         exit(EXIT_FAILURE);
       }
-    } catch (std::out_of_range) {
+    }
+    catch (std::out_of_range) {
       std::cerr << args[ai] << " is missing an argument" << std::endl;
       printHelp();
       exit(EXIT_FAILURE);
