@@ -31,7 +31,8 @@ struct entry {
   std::vector<int32_t> subwords;
 };
 
-class Dictionary {
+class Dictionary
+{
  protected:
   static const int32_t MAX_VOCAB_SIZE = 30000000;
   static const int32_t MAX_LINE_SIZE = 1024;
