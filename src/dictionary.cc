@@ -73,9 +73,7 @@ int32_t Dictionary::find(const std::string& w, uint32_t h) const
 
   while (word2int_[id] != -1 && words_[word2int_[id]].word != w)
   {
-     if ((id + 1) < word2intsize)
-        id = (id + 1) % word2intsize;
-     else return false;
+      id = (id + 1) % word2intsize;
   }
   return id;
 }
@@ -92,9 +90,7 @@ bool Dictionary::find(const std::string& w) const
 
    while (word2int_[id] != -1 && words_[word2int_[id]].word != w)
    {
-      if ((id + 1) < word2intsize)
-         id = (id + 1) % word2intsize;
-      else return false;
+      id = (id + 1) % word2intsize;
    }
    return (word2int_[id] > 0) && (words_[word2int_[id]].word == w);
 }
@@ -211,7 +207,7 @@ uint32_t Dictionary::hash(const std::string& str) const
 {
   uint32_t h = 2166136261;
   for (size_t i = 0; i < str.size(); i++) {
-    h = h ^ uint32_t(int8_t(str[i]));
+    h = h ^ uint32_t(uint8_t(str[i]));
     h = h * 16777619;
   }
   return h;
@@ -320,7 +316,6 @@ void Dictionary::readFromFile(std::wistream& wis, std::shared_ptr<Dictionary> st
       if (!bf && !word.empty())
       {
          add(word);
-         printf("%s ", word.c_str());
       }
       if ((ntokens_ % 1000000 == 0) && (ntokens_ > 1000000) && (args_->verbose > 1)) {
          std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::flush;

@@ -24,8 +24,6 @@ int main()
       wsw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
       stopwords->readFromFile(wsw, nullptr);
       wsw.close();
-
-      stopwords->dump(std::cout);
    }
 
 
