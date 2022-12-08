@@ -211,7 +211,7 @@ uint32_t Dictionary::hash(const std::string& str) const
 {
   uint32_t h = 2166136261;
   for (size_t i = 0; i < str.size(); i++) {
-    h = h ^ uint32_t(uint8_t(str[i]));
+    h = h ^ uint32_t(int8_t(str[i]));
     h = h * 16777619;
   }
   return h;
@@ -301,7 +301,7 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
       word.push_back(c);
     }
     else 
-       return !word.empty();
+       return true;
   }
   // trigger eofbit
   in.get();
@@ -317,9 +317,10 @@ void Dictionary::readFromFile(std::wistream& wis, std::shared_ptr<Dictionary> st
    {
       bool bf = stopwords && stopwords->find(word);
 
-      if (!bf)
+      if (!bf && !word.empty())
       {
          add(word);
+         printf("%s ", word.c_str());
       }
       if ((ntokens_ % 1000000 == 0) && (ntokens_ > 1000000) && (args_->verbose > 1)) {
          std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::flush;
