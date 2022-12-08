@@ -75,7 +75,8 @@ double Meter::f1Score() const
 {
   const double precision = this->precision();
   const double recall = this->recall();
-  if (precision + recall != 0) {
+  if (precision + recall != 0)
+  {
     return 2 * precision * recall / (precision + recall);
   }
   return std::numeric_limits<double>::quiet_NaN();
@@ -100,7 +101,8 @@ std::vector<std::pair<uint64_t, uint64_t>> Meter::getPositiveCounts(
   uint64_t falsePositives = 0;
   double lastScore = falseNegativeScore - 1.0;
 
-  for (auto it = v.rbegin(); it != v.rend(); ++it) {
+  for (auto it = v.rbegin(); it != v.rend(); ++it)
+  {
     double score = it->first;
     double gold = it->second;
     if (score < 0) { // only reachable recall
@@ -134,7 +136,8 @@ double Meter::precisionAtRecall(int32_t labelId, double recallQuery) const
   std::for_each(
       precisionRecall.begin(),
       precisionRecall.end(),
-      [&bestPrecision, recallQuery](const std::pair<double, double>& element) {
+      [&bestPrecision, recallQuery](const std::pair<double, double>& element)
+      {
         if (element.second >= recallQuery) {
           bestPrecision = std::max(bestPrecision, element.first);
         };
@@ -156,10 +159,11 @@ double Meter::recallAtPrecision(int32_t labelId, double precisionQuery) const
       precisionRecall.end(),
       [&bestRecall, precisionQuery](const std::pair<double, double>& element)
   {
-        if (element.first >= precisionQuery) {
+        if (element.first >= precisionQuery)
+        {
           bestRecall = std::max(bestRecall, element.second);
         };
-      });
+  });
   return bestRecall;
 }
 
@@ -190,7 +194,8 @@ std::vector<std::pair<double, double>> Meter::precisionRecallCurve(
     fullRecall = std::next(fullRecall);
   }
 
-  for (auto it = positiveCounts.begin(); it != fullRecall; it++) {
+  for (auto it = positiveCounts.begin(); it != fullRecall; it++)
+  {
     double precision = 0.0;
     double truePositives = it->first;
     double falsePositives = it->second;
@@ -209,8 +214,10 @@ std::vector<std::pair<double, double>> Meter::precisionRecallCurve(
 std::vector<std::pair<real, real>> Meter::scoreVsTrue(int32_t labelId) const
 {
   std::vector<std::pair<real, real>> ret;
-  if (labelId == kAllLabels) {
-    for (const auto& k : labelMetrics_) {
+  if (labelId == kAllLabels)
+  {
+    for (const auto& k : labelMetrics_)
+    {
       auto& labelScoreVsTrue = labelMetrics_.at(k.first).scoreVsTrue;
       ret.insert(ret.end(), labelScoreVsTrue.begin(), labelScoreVsTrue.end());
     }

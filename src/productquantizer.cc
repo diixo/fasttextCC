@@ -16,7 +16,8 @@
 
 namespace fasttext {
 
-real distL2(const real* x, const real* y, int32_t d) {
+real distL2(const real* x, const real* y, int32_t d)
+{
   real dist = 0;
   for (auto i = 0; i < d; i++) {
     auto tmp = x[i] - y[i];

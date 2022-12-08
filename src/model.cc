@@ -35,15 +35,17 @@ void Model::State::incrementNExamples(real loss)
 }
 
 Model::Model(
-    std::shared_ptr<Matrix> wi,
-    std::shared_ptr<Matrix> wo,
-    std::shared_ptr<Loss> loss,
-    bool normalizeGradient)
-    : wi_(wi), wo_(wo), loss_(loss), normalizeGradient_(normalizeGradient)
+   std::shared_ptr<Matrix> wi,
+   std::shared_ptr<Matrix> wo,
+   std::shared_ptr<Loss> loss,
+   bool normalizeGradient)
+   : wi_(wi)
+   , wo_(wo)
+   , loss_(loss)
+   , normalizeGradient_(normalizeGradient)
 {}
 
-void Model::computeHidden(const std::vector<int32_t>& input, State& state)
-    const
+void Model::computeHidden(const std::vector<int32_t>& input, State& state) const
 {
   Vector& hidden = state.hidden;
   hidden.zero();

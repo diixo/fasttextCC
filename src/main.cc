@@ -185,7 +185,8 @@ void test(const std::vector<std::string>& args)
   if (perLabel)
   {
     std::cout << std::fixed << std::setprecision(6);
-    auto writeMetric = [](const std::string& name, double value) {
+    auto writeMetric = [](const std::string& name, double value)
+    {
       std::cout << name << " : ";
       if (std::isfinite(value)) {
         std::cout << value;
@@ -196,7 +197,8 @@ void test(const std::vector<std::string>& args)
     };
 
     std::shared_ptr<const Dictionary> dict = fasttext.getDictionary();
-    for (int32_t labelId = 0; labelId < dict->nlabels(); labelId++) {
+    for (int32_t labelId = 0; labelId < dict->nlabels(); labelId++)
+    {
       writeMetric("F1-Score", meter.f1Score(labelId));
       writeMetric("Precision", meter.precision(labelId));
       writeMetric("Recall", meter.recall(labelId));
