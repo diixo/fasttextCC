@@ -293,7 +293,9 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
         return true;
       }
     }
-    c = translateChar(c);
+
+    c = (args_->stopwords.empty()) ? translateChar(c) : transformChar(c);
+
     if (c > 0)
     {
       word.push_back(c);

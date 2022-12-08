@@ -542,17 +542,20 @@ bool FastText::predictLine(
 void FastText::getSentenceVector(std::wistream& in, fasttext::Vector& svec)
 {
   svec.zero();
-  if (args_->model == model_name::sup) {
+  if (args_->model == model_name::sup)
+  {
     std::vector<int32_t> line, labels;
     dict_->getLine(in, line, labels);
-    for (int32_t i = 0; i < line.size(); i++) {
+    for (int32_t i = 0; i < line.size(); i++)
+    {
       addInputVector(svec, line[i]);
     }
     if (!line.empty()) {
       svec.mul(1.0 / line.size());
     }
   }
-  else {
+  else
+  {
     Vector vec(args_->dim);
     std::wstring sentence;
     std::getline(in, sentence);
@@ -561,7 +564,14 @@ void FastText::getSentenceVector(std::wistream& in, fasttext::Vector& svec)
     int32_t count = 0;
     while (iss >> wword)
     {
-      getWordVector(vec, translate_wstr(wword));
+       if (args_->stopwords.empty())
+       {
+          getWordVector(vec, translate_wstr(wword));
+       }
+       else
+       {
+          getWordVector(vec, transform_wstr(wword));
+       }
       real norm = vec.norm();
       if (norm > 0) {
         vec.mul(1.0 / norm);
@@ -598,7 +608,8 @@ void FastText::precomputeWordVectors(DenseMatrix& wordVectors)
 {
   Vector vec(args_->dim);
   wordVectors.zero();
-  for (int32_t i = 0; i < dict_->nwords(); i++) {
+  for (int32_t i = 0; i < dict_->nwords(); i++)
+  {
     std::string word = dict_->getWord(i);
     getWordVector(vec, word);
     real norm = vec.norm();

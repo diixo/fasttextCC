@@ -37,6 +37,10 @@ bool is_anydigit(const std::wstring& input, size_t start_id = 0);
 
 wchar_t translateChar(const wchar_t ch);
 
+wchar_t transformChar(const wchar_t ch);
+
 std::string translate_wstr(const std::wstring& wstr);
+
+std::string transform_wstr(const std::wstring& wstr);
 
 //////////////////////////////////////////////////////////////////////////
