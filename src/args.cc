@@ -17,7 +17,8 @@
 
 namespace fasttext {
 
-Args::Args() {
+Args::Args()
+{
   lr = 0.05;
   dim = 100;
   ws = 5;
@@ -53,8 +54,10 @@ Args::Args() {
   autotuneModelSize = "";
 }
 
-std::string Args::lossToString(loss_name ln) const {
-  switch (ln) {
+std::string Args::lossToString(loss_name ln) const
+{
+  switch (ln)
+  {
     case loss_name::hs:
       return "hs";
     case loss_name::ns:
@@ -67,7 +70,8 @@ std::string Args::lossToString(loss_name ln) const {
   return "Unknown loss!"; // should never happen
 }
 
-std::string Args::boolToString(bool b) const {
+std::string Args::boolToString(bool b) const
+{
   if (b) {
     return "true";
   } else {
@@ -75,8 +79,10 @@ std::string Args::boolToString(bool b) const {
   }
 }
 
-std::string Args::modelToString(model_name mn) const {
-  switch (mn) {
+std::string Args::modelToString(model_name mn) const
+{
+  switch (mn)
+  {
     case model_name::cbow:
       return "cbow";
     case model_name::sg:
@@ -87,8 +93,10 @@ std::string Args::modelToString(model_name mn) const {
   return "Unknown model name!"; // should never happen
 }
 
-std::string Args::metricToString(metric_name mn) const {
-  switch (mn) {
+std::string Args::metricToString(metric_name mn) const
+{
+  switch (mn)
+  {
     case metric_name::f1score:
       return "f1score";
     case metric_name::f1scoreLabel:
@@ -105,9 +113,11 @@ std::string Args::metricToString(metric_name mn) const {
   return "Unknown metric name!"; // should never happen
 }
 
-void Args::parseArgs(const std::vector<std::string>& args) {
+void Args::parseArgs(const std::vector<std::string>& args)
+{
   std::string command(args[1]);
-  if (command == "supervised") {
+  if (command == "supervised")
+  {
     model = model_name::sup;
     loss = loss_name::softmax;
     minCount = 1;
@@ -240,7 +250,8 @@ void Args::parseArgs(const std::vector<std::string>& args) {
   }
 }
 
-void Args::printHelp() {
+void Args::printHelp()
+{
   printBasicHelp();
   printDictionaryHelp();
   printTrainingHelp();
@@ -248,7 +259,8 @@ void Args::printHelp() {
   printQuantizationHelp();
 }
 
-void Args::printBasicHelp() {
+void Args::printBasicHelp()
+{
   std::cerr << "\nThe following arguments are mandatory:\n"
             << "  -input              training file path\n"
             << "  -output             output file path\n"
@@ -256,7 +268,8 @@ void Args::printBasicHelp() {
             << "  -verbose            verbosity level [" << verbose << "]\n";
 }
 
-void Args::printDictionaryHelp() {
+void Args::printDictionaryHelp()
+{
   std::cerr << "\nThe following arguments for the dictionary are optional:\n"
             << "  -minCount           minimal number of word occurences ["
             << minCount << "]\n"
@@ -273,7 +286,8 @@ void Args::printDictionaryHelp() {
             << "  -label              labels prefix [" << label << "]\n";
 }
 
-void Args::printTrainingHelp() {
+void Args::printTrainingHelp()
+{
   std::cerr
       << "\nThe following arguments for training are optional:\n"
       << "  -lr                 learning rate [" << lr << "]\n"
@@ -297,7 +311,8 @@ void Args::printTrainingHelp() {
       << "  -seed               random generator seed  [" << seed << "]\n";
 }
 
-void Args::printAutotuneHelp() {
+void Args::printAutotuneHelp()
+{
   std::cerr << "\nThe following arguments are for autotune:\n"
             << "  -autotune-validation            validation file to be used "
                "for evaluation\n"
@@ -313,7 +328,8 @@ void Args::printAutotuneHelp() {
             << autotuneModelSize << "] (empty = do not quantize)\n";
 }
 
-void Args::printQuantizationHelp() {
+void Args::printQuantizationHelp()
+{
   std::cerr
       << "\nThe following arguments for quantization are optional:\n"
       << "  -cutoff             number of words and ngrams to retain ["
@@ -328,7 +344,8 @@ void Args::printQuantizationHelp() {
       << "  -dsub               size of each sub-vector [" << dsub << "]\n";
 }
 
-void Args::save(std::ostream& out) {
+void Args::save(std::ostream& out)
+{
   out.write((char*)&(dim), sizeof(int));
   out.write((char*)&(ws), sizeof(int));
   out.write((char*)&(epoch), sizeof(int));
@@ -344,7 +361,8 @@ void Args::save(std::ostream& out) {
   out.write((char*)&(t), sizeof(double));
 }
 
-void Args::load(std::istream& in) {
+void Args::load(std::istream& in)
+{
   in.read((char*)&(dim), sizeof(int));
   in.read((char*)&(ws), sizeof(int));
   in.read((char*)&(epoch), sizeof(int));
@@ -360,7 +378,8 @@ void Args::load(std::istream& in) {
   in.read((char*)&(t), sizeof(double));
 }
 
-void Args::dump(std::ostream& out) const {
+void Args::dump(std::ostream& out) const
+{
   out << "dim"
       << " " << dim << std::endl;
   out << "ws"
@@ -401,7 +420,8 @@ void Args::setManual(const std::string& argName) {
   manualArgs_.emplace(argName);
 }
 
-metric_name Args::getAutotuneMetric() const {
+metric_name Args::getAutotuneMetric() const
+{
   if (autotuneMetric.substr(0, 3) == "f1:") {
     return metric_name::f1scoreLabel;
   } else if (autotuneMetric == "f1") {
@@ -422,7 +442,8 @@ metric_name Args::getAutotuneMetric() const {
   throw std::runtime_error("Unknown metric : " + autotuneMetric);
 }
 
-std::string Args::getAutotuneMetricLabel() const {
+std::string Args::getAutotuneMetricLabel() const
+{
   metric_name metric = getAutotuneMetric();
   std::string label;
   if (metric == metric_name::f1scoreLabel) {
@@ -442,13 +463,15 @@ std::string Args::getAutotuneMetricLabel() const {
   return label;
 }
 
-double Args::getAutotuneMetricValue() const {
+double Args::getAutotuneMetricValue() const
+{
   metric_name metric = getAutotuneMetric();
   double value = 0.0;
   if (metric == metric_name::precisionAtRecallLabel ||
       metric == metric_name::precisionAtRecall ||
       metric == metric_name::recallAtPrecisionLabel ||
-      metric == metric_name::recallAtPrecision) {
+      metric == metric_name::recallAtPrecision)
+  {
     size_t firstSemicolon = 18; // semicolon position in "precisionAtRecall:"
     size_t secondSemicolon = autotuneMetric.find(":", firstSemicolon);
     const std::string valueStr =
@@ -458,12 +481,14 @@ double Args::getAutotuneMetricValue() const {
   return value;
 }
 
-int64_t Args::getAutotuneModelSize() const {
+int64_t Args::getAutotuneModelSize() const
+{
   std::string modelSize = autotuneModelSize;
   if (modelSize.empty()) {
     return Args::kUnlimitedModelSize;
   }
-  std::unordered_map<char, int> units = {
+  std::unordered_map<char, int> units =
+  {
       {'k', 1000},
       {'K', 1000},
       {'m', 1000000},

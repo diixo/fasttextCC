@@ -42,14 +42,17 @@ void signalHandler(int signal) {
   }
 }
 
-class ElapsedTimeMarker {
+class ElapsedTimeMarker
+{
   std::chrono::steady_clock::time_point start_;
 
  public:
-  ElapsedTimeMarker() {
+  ElapsedTimeMarker()
+  {
     start_ = std::chrono::steady_clock::now();
   }
-  double getElapsed() {
+  double getElapsed()
+  {
     return fasttext::utils::getDuration(
         start_, std::chrono::steady_clock::now());
   }
@@ -69,7 +72,8 @@ T getArgGauss(
     double startSigma,
     double endSigma,
     double t,
-    bool linear) {
+    bool linear)
+{
   T returnValue;
   const double stddev = startSigma -
       ((startSigma - endSigma) / 0.5) *
@@ -80,7 +84,8 @@ T getArgGauss(
   const double coeff = normal(rng);
   double updateCoeff = 0.0;
 
-  if (linear) {
+  if (linear)
+  {
     updateCoeff = coeff;
     returnValue = static_cast<T>(updateCoeff + val);
   } else {
@@ -100,7 +105,8 @@ T updateArgGauss(
     double endSigma,
     double t,
     bool linear,
-    std::minstd_rand& rng) {
+    std::minstd_rand& rng)
+{
   T retVal = getArgGauss(val, rng, startSigma, endSigma, t, linear);
   if (retVal > max) {
     retVal = max;
@@ -121,12 +127,14 @@ AutotuneStrategy::AutotuneStrategy(
       bestMinnIndex_(0),
       bestDsubExponent_(1),
       bestNonzeroBucket_(2000000),
-      originalBucket_(originalArgs.bucket) {
+      originalBucket_(originalArgs.bucket)
+{
   minnChoices_ = {0, 2, 3};
   updateBest(originalArgs);
 }
 
-Args AutotuneStrategy::ask(double elapsed) {
+Args AutotuneStrategy::ask(double elapsed)
+{
   const double t = std::min(1.0, elapsed / maxDuration_);
   trials_++;
 
@@ -154,7 +162,8 @@ Args AutotuneStrategy::ask(double elapsed) {
         updateArgGauss(bestDsubExponent_, 1, 4, 2.0, 1.0, t, true, rng_);
     args.dsub = (1 << dsubExponent);
   }
-  if (!args.isManual("minn")) {
+  if (!args.isManual("minn"))
+  {
     int minnIndex = updateArgGauss(
         bestMinnIndex_,
         0,
@@ -166,18 +175,21 @@ Args AutotuneStrategy::ask(double elapsed) {
         rng_);
     args.minn = minnChoices_[minnIndex];
   }
-  if (!args.isManual("maxn")) {
+  if (!args.isManual("maxn"))
+  {
     if (args.minn == 0) {
       args.maxn = 0;
     } else {
       args.maxn = args.minn + 3;
     }
   }
-  if (!args.isManual("bucket")) {
+  if (!args.isManual("bucket"))
+  {
     int nonZeroBucket = updateArgGauss(
         bestNonzeroBucket_, 10000, 10000000, 2.0, 1.5, t, false, rng_);
     args.bucket = nonZeroBucket;
-  } else {
+  }
+  else {
     args.bucket = originalBucket_;
   }
   if (args.wordNgrams <= 1 && args.maxn == 0) {
@@ -190,7 +202,8 @@ Args AutotuneStrategy::ask(double elapsed) {
   return args;
 }
 
-int AutotuneStrategy::getIndex(int val, const std::vector<int>& choices) {
+int AutotuneStrategy::getIndex(int val, const std::vector<int>& choices)
+{
   auto found = std::find(choices.begin(), choices.end(), val);
   int ind = 0;
   if (found != choices.end()) {
@@ -199,7 +212,8 @@ int AutotuneStrategy::getIndex(int val, const std::vector<int>& choices) {
   return ind;
 }
 
-void AutotuneStrategy::updateBest(const Args& args) {
+void AutotuneStrategy::updateBest(const Args& args)
+{
   bestArgs_ = args;
   bestMinnIndex_ = getIndex(args.minn, minnChoices_);
   bestDsubExponent_ = log2(args.dsub);
@@ -216,9 +230,11 @@ Autotune::Autotune(const std::shared_ptr<FastText>& fastText)
       sizeConstraintFailed_(0),
       continueTraining_(false),
       strategy_(),
-      timer_() {}
+      timer_()
+{}
 
-void Autotune::printInfo(double maxDuration) {
+void Autotune::printInfo(double maxDuration)
+{
   double progress = elapsed_ * 100 / maxDuration;
   progress = std::min(progress, 100.0);
 
@@ -230,7 +246,8 @@ void Autotune::printInfo(double maxDuration) {
   std::cerr << " Best score: " << std::setw(9) << std::setprecision(6);
   if (bestScore_ == kUnknownBestScore) {
     std::cerr << "unknown";
-  } else {
+  }
+  else {
     std::cerr << bestScore_;
   }
   std::cerr << " ETA: "
@@ -240,9 +257,11 @@ void Autotune::printInfo(double maxDuration) {
 
 void Autotune::timer(
     const std::chrono::steady_clock::time_point& start,
-    double maxDuration) {
+    double maxDuration)
+{
   elapsed_ = 0.0;
-  while (keepTraining(maxDuration)) {
+  while (keepTraining(maxDuration))
+  {
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
     elapsed_ = utils::getDuration(start, std::chrono::steady_clock::now());
     printInfo(maxDuration);
@@ -250,18 +269,21 @@ void Autotune::timer(
   abort();
 }
 
-bool Autotune::keepTraining(double maxDuration) const {
+bool Autotune::keepTraining(double maxDuration) const
+{
   return continueTraining_ && elapsed_ < maxDuration;
 }
 
-void Autotune::abort() {
+void Autotune::abort()
+{
   if (continueTraining_) {
     continueTraining_ = false;
     fastText_->abort();
   }
 }
 
-void Autotune::startTimer(const Args& args) {
+void Autotune::startTimer(const Args& args)
+{
   std::chrono::steady_clock::time_point start =
       std::chrono::steady_clock::now();
   timer_ = std::thread([=]() { timer(start, args.autotuneDuration); });
@@ -270,7 +292,8 @@ void Autotune::startTimer(const Args& args) {
   continueTraining_ = true;
 
   auto previousSignalHandler = std::signal(SIGINT, signalHandler);
-  interruptSignalHandler = [&]() {
+  interruptSignalHandler = [&]()
+  {
     std::signal(SIGINT, previousSignalHandler);
     std::cerr << std::endl << "Aborting autotune..." << std::endl;
     abort();
@@ -281,10 +304,12 @@ double Autotune::getMetricScore(
     Meter& meter,
     const metric_name& metricName,
     const double metricValue,
-    const std::string& metricLabel) const {
+    const std::string& metricLabel) const
+{
   double score = 0.0;
   int32_t labelId = -1;
-  if (!metricLabel.empty()) {
+  if (!metricLabel.empty())
+  {
     labelId = fastText_->getLabelId(metricLabel);
     if (labelId == -1) {
       throw std::runtime_error("Unknown autotune metric label");
@@ -308,7 +333,8 @@ double Autotune::getMetricScore(
   return score;
 }
 
-void Autotune::printArgs(const Args& args, const Args& autotuneArgs) {
+void Autotune::printArgs(const Args& args, const Args& autotuneArgs)
+{
   LOG_VAL(epoch, args.epoch)
   LOG_VAL(lr, args.lr)
   LOG_VAL(dim, args.dim)
@@ -325,15 +351,19 @@ int Autotune::getCutoffForFileSize(
     bool qout,
     bool qnorm,
     int dsub,
-    int64_t fileSize) const {
+    int64_t fileSize) const
+{
   int64_t outModelSize = 0;
   const int64_t outM = fastText_->getOutputMatrix()->size(0);
   const int64_t outN = fastText_->getOutputMatrix()->size(1);
-  if (qout) {
+  if (qout)
+  {
     const int64_t outputPqSize = 16 + 4 * (outN * (1 << 8));
     outModelSize =
         21 + (outM * ((outN + 2 - 1) / 2)) + outputPqSize + (qnorm ? outM : 0);
-  } else {
+  }
+  else
+  {
     outModelSize = 16 + 4 * (outM * outN);
   }
   const int64_t dim = fastText_->getInputMatrix()->size(1);
@@ -344,8 +374,10 @@ int Autotune::getCutoffForFileSize(
   return std::max(cutoff, kCutoffLimit);
 }
 
-bool Autotune::quantize(Args& args, const Args& autotuneArgs) {
-  if (autotuneArgs.getAutotuneModelSize() == Args::kUnlimitedModelSize) {
+bool Autotune::quantize(Args& args, const Args& autotuneArgs)
+{
+  if (autotuneArgs.getAutotuneModelSize() == Args::kUnlimitedModelSize)
+  {
     return true;
   }
   auto outputSize = fastText_->getOutputMatrix()->size(0);
@@ -364,7 +396,8 @@ bool Autotune::quantize(Args& args, const Args& autotuneArgs) {
   return true;
 }
 
-void Autotune::printSkippedArgs(const Args& autotuneArgs) {
+void Autotune::printSkippedArgs(const Args& autotuneArgs)
+{
   std::unordered_set<std::string> argsToCheck = {"epoch",
                                                  "lr",
                                                  "dim",
@@ -374,7 +407,8 @@ void Autotune::printSkippedArgs(const Args& autotuneArgs) {
                                                  "minn",
                                                  "maxn",
                                                  "dsub"};
-  for (const auto& arg : argsToCheck) {
+  for (const auto& arg : argsToCheck)
+  {
     if (autotuneArgs.isManual(arg)) {
       std::cerr << "Warning : " << arg
                 << " is manually set to a specific value. "
@@ -383,7 +417,8 @@ void Autotune::printSkippedArgs(const Args& autotuneArgs) {
   }
 }
 
-void Autotune::train(const Args& autotuneArgs) {
+void Autotune::train(const Args& autotuneArgs)
+{
   std::wifstream validationFileStream(cstr_to_wstr(autotuneArgs.autotuneValidationFile));
   validationFileStream.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
   if (!validationFileStream.is_open()) {
@@ -400,7 +435,8 @@ void Autotune::train(const Args& autotuneArgs) {
       new AutotuneStrategy(trainArgs, autotuneArgs.seed));
   startTimer(autotuneArgs);
 
-  while (keepTraining(autotuneArgs.autotuneDuration)) {
+  while (keepTraining(autotuneArgs.autotuneDuration))
+  {
     trials_++;
 
     trainArgs = strategy_->ask(elapsed_);
@@ -408,10 +444,12 @@ void Autotune::train(const Args& autotuneArgs) {
     printArgs(trainArgs, autotuneArgs);
     ElapsedTimeMarker elapsedTimeMarker;
     double currentScore = std::numeric_limits<double>::quiet_NaN();
-    try {
+    try
+    {
       fastText_->train(trainArgs);
       bool sizeConstraintOK = quantize(trainArgs, autotuneArgs);
-      if (sizeConstraintOK) {
+      if (sizeConstraintOK)
+      {
         const auto& metricLabel = autotuneArgs.getAutotuneMetricLabel();
         Meter meter(!metricLabel.empty());
         fastText_->test(
@@ -423,15 +461,19 @@ void Autotune::train(const Args& autotuneArgs) {
             autotuneArgs.getAutotuneMetricValue(),
             metricLabel);
 
-        if (bestScore_ == kUnknownBestScore || (currentScore > bestScore_)) {
+        if (bestScore_ == kUnknownBestScore || (currentScore > bestScore_))
+        {
           bestTrainArgs = trainArgs;
           bestScore_ = currentScore;
           strategy_->updateBest(bestTrainArgs);
         }
-      } else {
+      }
+      else
+      {
         sizeConstraintFailed_++;
         if (!sizeConstraintWarning && trials_ > 10 &&
-            sizeConstraintFailed_ > (trials_ / 2)) {
+            sizeConstraintFailed_ > (trials_ / 2))
+        {
           sizeConstraintWarning = true;
           std::cerr << std::endl
                     << "Warning : requested model size is probably too small. "
@@ -455,19 +497,24 @@ void Autotune::train(const Args& autotuneArgs) {
     timer_.join();
   }
 
-  if (bestScore_ == kUnknownBestScore) {
+  if (bestScore_ == kUnknownBestScore)
+  {
     std::string errorMessage;
-    if (sizeConstraintWarning) {
+    if (sizeConstraintWarning)
+    {
       errorMessage =
           "Couldn't fulfil model size constraint: please increase "
           "`autotune-modelsize`.";
-    } else {
+    }
+    else {
       errorMessage =
           "Didn't have enough time to train once: please increase "
           "`autotune-duration`.";
     }
     throw std::runtime_error(errorMessage);
-  } else {
+  }
+  else
+  {
     std::cerr << std::endl;
     std::cerr << "Training again with best arguments" << std::endl;
     bestTrainArgs.verbose = verbose;
