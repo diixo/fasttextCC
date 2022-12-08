@@ -201,7 +201,7 @@ wchar_t translateChar(const wchar_t ch)
 
    if (ch < space)
    {
-      return space;
+      return 0;
    }
 
    if ((ch >= 0x0041) && (ch <= 0x005a)) // check latin symbols
@@ -240,7 +240,7 @@ wchar_t transformChar(const wchar_t ch)
 
    if (ch < space)
    {
-      return space;
+      return 0;
    }
 
    if ((ch >= 0x0041) && (ch <= 0x005a)) // check latin symbols

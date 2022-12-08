@@ -300,6 +300,8 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
     {
       word.push_back(c);
     }
+    else 
+       return !word.empty();
   }
   // trigger eofbit
   in.get();

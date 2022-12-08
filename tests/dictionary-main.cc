@@ -16,10 +16,11 @@ int main()
 {
    auto args = std::make_shared<fasttext::Args>();
    args->minCount = 1;
+   args->stopwords = "stopwords.txt";
 
    auto stopwords = std::make_shared<fasttext::Dictionary>(args, VOCAB_SZ);
    {
-      std::wifstream wsw(L"stopwords.txt");
+      std::wifstream wsw(cstr_to_wstr(args->stopwords));
       wsw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
       stopwords->readFromFile(wsw, nullptr);
       wsw.close();
