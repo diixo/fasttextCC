@@ -223,6 +223,11 @@ wchar_t translateChar(const wchar_t ch)
    const wchar_t space = 0x0020;
    const wchar_t hyphen = 0x002d;
 
+   if (ch == 0x0a)   // new-line
+   {
+      return ch;
+   }
+
    if (ch < space)
    {
       return 0;
@@ -267,6 +272,11 @@ wchar_t transformChar(const wchar_t ch)
 {
    const wchar_t space = 0x0020;
    const wchar_t hyphen = 0x002d;
+
+   if (ch == 0x0a)   // new-line
+   {
+      return ch;
+   }
 
    if (ch < space)
    {

@@ -259,49 +259,48 @@ void Dictionary::initNgrams()
 bool Dictionary::readWord(std::wistream& in, std::string& word) const
 {
    static int unget_ch = 0;
+   int c = 0;
 
-  int c;
-  std::wstreambuf& sb = *in.rdbuf();
-  word.clear();
+   std::wstreambuf& sb = *in.rdbuf();
+   word.clear();
 
-  if (unget_ch > 0)
-  {
-     unget_ch = 0;
-     word = "</s>";
-     return true;
-  }
-  unget_ch = 0;
-  while ((c = sb.sbumpc()) != 0xFFFF)
-  {
-    if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
-        c == '\f' || c == '\0' || c == 0xA0)
-    {
-      if (word.empty())
+   if (unget_ch > 0)
+   {
+      unget_ch = 0;
+      word = "</s>";
+      return true;
+   }
+   unget_ch = 0;
+   while ((c = sb.sbumpc()) != 0xFFFF)
+   {
+      c = (args_->stopwords.empty()) ? translateChar(c) : transformChar(c);
+
+      if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
+          c == '\f' || c == '\0' || c == 0xA0)
       {
-        if (c == '\n') {
-          word = "</s>";
-          return true;
-        }
-        continue;
+         if (word.empty())
+         {
+            if (c == '\n') {
+               word = "</s>";
+               return true;
+            }
+            continue;
+         }
+         else {
+            if (c == '\n') { unget_ch = c; }
+            return true;
+         }
       }
-      else {
-        if (c == '\n') unget_ch = c;
-        return true;
+
+      if (c > 0)
+      {
+         word.push_back(c);
       }
-    }
-
-    c = (args_->stopwords.empty()) ? translateChar(c) : transformChar(c);
-
-    if (c > 0)
-    {
-      word.push_back(c);
-    }
-    else 
-       return true;
-  }
-  // trigger eofbit
-  in.get();
-  return !word.empty();
+      else return true;
+   }
+   // trigger eofbit
+   in.get();
+   return !word.empty();
 }
 
 void Dictionary::readFromFile(std::wistream& wis, std::shared_ptr<Dictionary> stopwords)
@@ -459,8 +458,10 @@ int32_t Dictionary::getLine(
       continue;
     }
 
+    const std::string& str = words_[wid].word;
     ntokens++;
-    if (getType(wid) == entry_type::word && !discard(wid, uniform(rng))) {
+    if (getType(wid) == entry_type::word && !discard(wid, uniform(rng)))
+    {
       words.push_back(wid);
     }
     if (ntokens > MAX_LINE_SIZE || token == EOS) {
