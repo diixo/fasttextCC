@@ -274,7 +274,7 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
   while ((c = sb.sbumpc()) != 0xFFFF)
   {
     if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
-        c == '\f' || c == '\0')
+        c == '\f' || c == '\0' || c == 0xA0)
     {
       if (word.empty())
       {

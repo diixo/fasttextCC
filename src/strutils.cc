@@ -198,6 +198,7 @@ bool is_anydigit(const std::wstring& input, size_t start_id)
 wchar_t translateChar(const wchar_t ch)
 {
    const wchar_t space = 0x0020;
+   const wchar_t hyphen = 0x002d;
 
    if (ch < space)
    {
@@ -207,6 +208,11 @@ wchar_t translateChar(const wchar_t ch)
    if ((ch >= 0x0041) && (ch <= 0x005a)) // check latin symbols
    {
       return ch;
+   }
+
+   if (ch == 0x00ad)
+   {
+      return hyphen;
    }
 
    if (isCharApostrophe(ch))
@@ -237,6 +243,7 @@ wchar_t translateChar(const wchar_t ch)
 wchar_t transformChar(const wchar_t ch)
 {
    const wchar_t space = 0x0020;
+   const wchar_t hyphen = 0x002d;
 
    if (ch < space)
    {
@@ -246,6 +253,11 @@ wchar_t transformChar(const wchar_t ch)
    if ((ch >= 0x0041) && (ch <= 0x005a)) // check latin symbols
    {
       return towlower(ch);
+   }
+
+   if (ch == 0x00ad)
+   {
+      return hyphen;
    }
 
    if (isCharApostrophe(ch))
