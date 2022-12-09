@@ -21,13 +21,17 @@ bool isCharApostrophe(const wchar_t ch);
 
 //////////////////////////////////////////////////////////////////////////
 
-std::wstring& ltrim(std::wstring& input, const std::wstring& delim);
+std::string& ltrim(const std::string& delim, std::string& io);
 
-std::wstring& rtrim(std::wstring& input, const std::wstring& delim);
+std::string& rtrim(const std::string& delim, std::string& io);
 
-std::wstring& trim(std::wstring& input, const std::wstring& delim);
+std::string& trim(const std::string& delim, std::string& io);
 
-std::wstring& trim(std::wstring& input, const std::wstring& delim);
+std::wstring& ltrim(const std::wstring& delim, std::wstring& io);
+
+std::wstring& rtrim(const std::wstring& delim, std::wstring& io);
+
+std::wstring& trim(const std::wstring& delim, std::wstring& io);
 
 //////////////////////////////////////////////////////////////////////////
 

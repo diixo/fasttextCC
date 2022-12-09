@@ -147,22 +147,45 @@ bool isCharApostrophe(const wchar_t ch)
    return false;
 }
 
-std::wstring& ltrim(std::wstring& input, const std::wstring& delim)
+//////////////////////////////////////////////////////////////////////////
+
+std::string& ltrim(const std::string& delim, std::string& io)
 {
-   input.erase(0, input.find_first_not_of(delim));
-   return input;
+   io.erase(0, io.find_first_not_of(delim));
+   return io;
 }
 
-std::wstring& rtrim(std::wstring& input, const std::wstring& delim)
+std::string& rtrim(const std::string& delim, std::string& io)
 {
-   input.erase(input.find_last_not_of(delim) + 1);
-   return input;
+   io.erase(io.find_last_not_of(delim) + 1);
+   return io;
 }
 
-std::wstring& trim(std::wstring& input, const std::wstring& delim)
+std::string& trim(const std::string& delim, std::string& io)
 {
-   return ltrim(rtrim(input, delim), delim);
+   return ltrim(delim, rtrim(delim, io));
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+std::wstring& ltrim(const std::wstring& delim, std::wstring& io)
+{
+   io.erase(0, io.find_first_not_of(delim));
+   return io;
+}
+
+std::wstring& rtrim(const std::wstring& delim, std::wstring& io)
+{
+   io.erase(io.find_last_not_of(delim) + 1);
+   return io;
+}
+
+std::wstring& trim(const std::wstring& delim, std::wstring& io)
+{
+   return ltrim(delim, rtrim(delim, io));
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 bool is_digit(const std::wstring& input, size_t start_id)
 {
