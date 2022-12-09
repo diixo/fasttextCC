@@ -279,7 +279,7 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
       if (word.empty())
       {
         if (c == '\n') {
-          word += "</s>";
+          word = "</s>";
           return true;
         }
         continue;
