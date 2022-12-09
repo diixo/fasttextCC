@@ -4,8 +4,8 @@
 ## Added features
 
 * UTF-8 input file support
-* Filtering by using stopwords-file ([-stopwords] option)
-* Fix of handling soft-symbols
+* Filtering by using stopwords-file (added **-stopwords** option)
+* Fix of handling soft-symbols (soft-hyphen, no-brake space, etc..)
 
 ## Table of contents
 
