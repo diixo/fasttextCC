@@ -27,7 +27,6 @@
    * [Enriching Word Vectors with Subword Information](#enriching-word-vectors-with-subword-information)
    * [Bag of Tricks for Efficient Text Classification](#bag-of-tricks-for-efficient-text-classification)
    * [FastText.zip: Compressing text classification models](#fasttextzip-compressing-text-classification-models)
-* [Join the fastText community](#join-the-fasttext-community)
 * [License](#license)
 
 ## Resources
@@ -319,14 +318,6 @@ Please cite [1](#enriching-word-vectors-with-subword-information) if using this 
 
 (\* These authors contributed equally.)
 
-
-## Join the fastText community
-
-* Facebook page: https://www.facebook.com/groups/1174547215919768
-* Google group: https://groups.google.com/forum/#!forum/fasttext-library
-* Contact: [egrave@fb.com](mailto:egrave@fb.com), [bojanowski@fb.com](mailto:bojanowski@fb.com), [ajoulin@fb.com](mailto:ajoulin@fb.com), [tmikolov@fb.com](mailto:tmikolov@fb.com)
-
-See the CONTRIBUTING file for information about how to help out.
 
 ## License
 
