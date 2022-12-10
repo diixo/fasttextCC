@@ -238,6 +238,10 @@ wchar_t translateChar(const wchar_t ch)
       return ch;
    }
 
+   if (ch == 0x00a0)
+   {
+      return space;
+   }
    if (ch == 0x00ad)
    {
       return hyphen;
@@ -288,6 +292,10 @@ wchar_t transformChar(const wchar_t ch)
       return towlower(ch);
    }
 
+   if (ch == 0x00a0)
+   {
+      return space;
+   }
    if (ch == 0x00ad)
    {
       return hyphen;

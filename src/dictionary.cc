@@ -276,8 +276,16 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
       c = (args_->stopwords.empty()) ? translateChar(c) : transformChar(c);
 
       if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
-          c == '\f' || c == '\0' || c == 0xA0)
+          c == '\f' || c == '\0')
       {
+         const size_t prevsz = word.size();
+         rtrim("?!.;", word);
+         if (prevsz != word.size())
+         {
+            c = '\n';
+         }
+         trim("'-,:)/(\"", word);
+
          if (word.empty())
          {
             if (c == '\n') {
