@@ -1,5 +1,6 @@
-# fastText
-[fastText](https://fasttext.cc/) is a library for efficient learning of word representations and sentence classification.
+# fastTextСС
+**fastTextСС** is extended version of [fastText](https://fasttext.cc/)
+FastText is a library for efficient learning of word representations and sentence classification.
 
 ## Added features vs original **fastText**
 
