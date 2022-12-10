@@ -428,6 +428,16 @@ void FastText::supervised(
 
 void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& line)
 {
+   if (args_->verbose > 2)
+   {
+      printf("cbow::>>");
+      for (auto wid : line) {
+         const std::string& str = dict_->getWord(wid);
+         printf(" %s", str.c_str());
+      }
+      printf("\n");
+   }
+
   std::vector<int32_t> bow;
   std::uniform_int_distribution<> uniform(1, args_->ws);
   for (int32_t w = 0; w < line.size(); w++)
@@ -443,6 +453,10 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
       }
     }
     model_->update(bow, line, w, lr, state);
+  }
+  if (args_->verbose > 2)
+  {
+     printf("cbow::<<\n");
   }
 }
 

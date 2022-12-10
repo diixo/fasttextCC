@@ -458,6 +458,9 @@ int32_t Dictionary::getLine(
 
   reset(in);
   words.clear();
+
+  std::vector<int32_t> line;
+
   while (readWord(in, token))
   {
     int32_t h = find_id(token);
@@ -466,15 +469,27 @@ int32_t Dictionary::getLine(
       continue;
     }
 
-    const std::string& str = words_[wid].word;
+    if (args_->verbose > 2)
+    {
+       line.push_back(wid);
+    }
+
     ntokens++;
     if (getType(wid) == entry_type::word && !discard(wid, uniform(rng)))
     {
-      words.push_back(wid);
+       words.push_back(wid);
     }
     if (ntokens > MAX_LINE_SIZE || token == EOS) {
       break;
     }
+  }
+  if (!line.empty()) {
+     printf(">>");
+     for (auto wid: line) {
+        const std::string& str = words_[wid].word;
+        printf(" %s", str.c_str());
+     }
+     printf("\n");
   }
   return ntokens;
 }
