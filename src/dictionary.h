@@ -100,6 +100,8 @@ class Dictionary
   void save(std::ostream&) const;
   void load(std::istream&);
   std::vector<int64_t> getCounts(entry_type) const;
+  int32_t getLine(std::wistream& in, std::vector<int32_t>& words)
+     const;
   int32_t getLine(std::wistream&, std::vector<int32_t>&, std::vector<int32_t>&)
       const;
   int32_t getLine(std::wistream&, std::vector<int32_t>&, std::minstd_rand&)

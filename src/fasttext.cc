@@ -754,7 +754,14 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback)
          }
          else if (args_->model == model_name::cbow)
          {
-            localTokenCount += dict_->getLine(wifs, line, state.rng);
+            if (stopwords_)
+            {
+               localTokenCount += dict_->getLine(wifs, line);
+            }
+            else
+            {
+               localTokenCount += dict_->getLine(wifs, line, state.rng);
+            }
             cbow(state, lr, line);
          }
          else if (args_->model == model_name::sg)

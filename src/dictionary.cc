@@ -470,6 +470,50 @@ void Dictionary::reset(std::wistream& in) const
   }
 }
 
+int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words) const
+{
+   std::string token;
+   int32_t ntokens = 0;
+
+   reset(in);
+   words.clear();
+
+   std::vector<int32_t> line;
+
+   while (readWord(in, token))
+   {
+      ntokens++;
+
+      int32_t h = find_id(token);
+      int32_t wid = word2int_[h];
+      if (wid < 0) {
+         continue;
+      }
+
+      if (args_->verbose > 2)
+      {
+         line.push_back(wid);
+      }
+
+      if (getType(wid) == entry_type::word)
+      {
+         words.push_back(wid);
+      }
+      if (ntokens > MAX_LINE_SIZE || token == EOS) {
+         break;
+      }
+   }
+   if (!line.empty()) {
+      printf(">>");
+      for (auto wid : line) {
+         const std::string& str = words_[wid].word;
+         printf(" %s", str.c_str());
+      }
+      printf(" <%d>\n", ntokens);
+   }
+   return ntokens;
+}
+
 int32_t Dictionary::getLine(
     std::wistream& in,
     std::vector<int32_t>& words,
