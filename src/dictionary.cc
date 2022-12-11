@@ -25,6 +25,7 @@
 namespace fasttext {
 
 const std::string Dictionary::EOS = "</s>";
+const std::string Dictionary::SW  = "</w>";
 const std::string Dictionary::BOW = "<";
 const std::string Dictionary::EOW = ">";
 
@@ -111,6 +112,23 @@ void Dictionary::add(const std::string& w)
   }
 }
 
+void Dictionary::addStopword()
+{
+   int32_t h = find_id(Dictionary::SW);
+   ntokens_++;
+   if (word2int_[h] == -1) {
+      entry e;
+      e.word = Dictionary::SW;
+      e.count = 1;
+      e.type = entry_type::stopword;
+      words_.push_back(e);
+      word2int_[h] = size_++;
+   }
+   else {
+      words_[word2int_[h]].count++;
+   }
+}
+
 int32_t Dictionary::nwords() const {
   return nwords_;
 }
@@ -136,7 +154,7 @@ const std::vector<int32_t> Dictionary::getSubwords(const std::string& word) cons
     return getSubwords(i);
   }
   std::vector<int32_t> ngrams;
-  if (word != EOS) {
+  if (word != EOS || word != SW) {
     computeSubwords(BOW + word + EOW, ngrams);
   }
   return ngrams;
@@ -154,7 +172,7 @@ void Dictionary::getSubwords(
     ngrams.push_back(i);
     substrings.push_back(words_[i].word);
   }
-  if (word != EOS) {
+  if (word != EOS || word != SW) {
     computeSubwords(BOW + word + EOW, ngrams, &substrings);
   }
 }
@@ -250,7 +268,7 @@ void Dictionary::initNgrams()
     std::string word = BOW + words_[i].word + EOW;
     words_[i].subwords.clear();
     words_[i].subwords.push_back(i);
-    if (words_[i].word != EOS) {
+    if (words_[i].word != EOS || words_[i].word != SW) {
       computeSubwords(word, words_[i].subwords);
     }
   }
@@ -320,7 +338,11 @@ void Dictionary::readFromFile(std::wistream& wis, std::shared_ptr<Dictionary> st
    {
       bool bf = stopwords && stopwords->find(word);
 
-      if (!bf && !word.empty())
+      if (bf)
+      {
+         addStopword();
+      }
+      else if (!bf && !word.empty())
       {
          add(word);
       }
@@ -337,7 +359,7 @@ void Dictionary::readFromFile(std::wistream& wis, std::shared_ptr<Dictionary> st
    initNgrams();
    if (args_->verbose > 0) {
       std::cerr << "-----------------" << std::endl;
-      std::cerr << "\rRead " << ntokens_ << " words" << std::endl;
+      std::cerr << "\rRead " << ntokens_ << " tokens" << std::endl;
       //std::cerr << "\rRead " << ntokens_ / 1000000 << "M words" << std::endl;
       std::cerr << "Number of words:  " << nwords_ << std::endl;
       std::cerr << "Number of labels: " << nlabels_ << std::endl;
@@ -361,7 +383,8 @@ void Dictionary::threshold(int64_t t, int64_t tl)
           words_.end(),
           [&](const entry& e) {
             return (e.type == entry_type::word && e.count < t) ||
-                (e.type == entry_type::label && e.count < tl);
+                (e.type == entry_type::label && e.count < tl) ||
+                (e.type == entry_type::stopword && e.count < t);
           }),
       words_.end());
   words_.shrink_to_fit();
@@ -373,7 +396,7 @@ void Dictionary::threshold(int64_t t, int64_t tl)
   {
     int32_t h = find_id(it->word);
     word2int_[h] = size_++;
-    if (it->type == entry_type::word) {
+    if (it->type == entry_type::word || it->type == entry_type::stopword) {
       nwords_++;
     }
     if (it->type == entry_type::label) {
@@ -424,7 +447,7 @@ void Dictionary::addSubwords(
     int32_t wid) const
 {
   if (wid < 0) { // out of vocab
-    if (token != EOS) {
+    if (token != EOS || token != SW) {
       computeSubwords(BOW + token + EOW, line);
     }
   }
@@ -676,6 +699,9 @@ void Dictionary::dump(std::ostream& out) const
     std::string entryType = "word";
     if (it.type == entry_type::label) {
       entryType = "label";
+    }
+    else if (it.type == entry_type::stopword) {
+       entryType = "stopwrd";
     }
     out << it.word << " :" << it.count << " " << entryType << std::endl;
   }

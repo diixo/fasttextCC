@@ -22,7 +22,7 @@
 namespace fasttext {
 
 typedef int32_t id_type;
-enum class entry_type : int8_t { word = 0, label = 1 };
+enum class entry_type : int8_t { word = 0, label = 1, stopword = 2 };
 
 struct entry {
   std::string word;
@@ -64,6 +64,7 @@ class Dictionary
 
  public:
   static const std::string EOS;
+  static const std::string SW;
   static const std::string BOW;
   static const std::string EOW;
 
@@ -92,6 +93,7 @@ class Dictionary
       std::vector<std::string>* substrings = nullptr) const;
   uint32_t hash(const std::string& str) const;
   void add(const std::string&);
+  void addStopword();
   bool readWord(std::wistream& in, std::string& word) const;
   void readFromFile(std::wistream&, std::shared_ptr<Dictionary>);
   std::string getLabel(int32_t) const;

@@ -804,7 +804,7 @@ std::shared_ptr<Matrix> FastText::getInputMatrixFromFile(
     std::string word;
     in >> word;
     words.push_back(word);
-    dict_->add(word);
+    dict_->add(word);   // !? skip stopwords. 
     for (size_t j = 0; j < dim; j++) {
       in >> mat->at(i, j);
     }
