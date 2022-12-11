@@ -6,7 +6,7 @@ FastText is a library for efficient learning of word representations and sentenc
 ## Added features vs original **fastText**
 
 * UTF-8 input file support
-* Filtering by using stopwords-file (added **-stopwords** option), converting symbols to lower-case.
+* Filtering by using stopwords-file (added **-stopwords** option), converting symbols to lower-case if stopwords (by default).
 * Fix of handling special symbols (soft-hyphen, no-brake space, etc..)
 
 Example for **cbow**-learning:
