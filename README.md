@@ -9,6 +9,12 @@ FastText is a library for efficient learning of word representations and sentenc
 * Filtering by using stopwords-file (added **-stopwords** option), converting symbols to lower-case.
 * Fix of handling special symbols (soft-hyphen, no-brake space, etc..)
 
+Example for **cbow**-learning:
+
+```
+$ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopwords stopwords.txt -epoch 100 -verbose 3
+```
+
 ## Table of contents
 
 * [Resources](#resources)

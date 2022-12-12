@@ -274,56 +274,14 @@ wchar_t translateChar(const wchar_t ch)
 
 wchar_t transformChar(const wchar_t ch)
 {
-   const wchar_t space = 0x0020;
-   const wchar_t hyphen = 0x002d;
-
-   if (ch == 0x0a)   // new-line
-   {
-      return ch;
-   }
-
-   if (ch < space)
-   {
-      return 0;
-   }
-
    if ((ch >= 0x0041) && (ch <= 0x005a)) // check latin symbols
    {
       return towlower(ch);
    }
-
-   if (ch == 0x00a0)
+   else
    {
-      return space;
+      return translateChar(ch);
    }
-   if (ch == 0x00ad)
-   {
-      return hyphen;
-   }
-
-   if (isCharApostrophe(ch))
-   {
-      return apostrophe;
-   }
-
-   // replace hieroglyph symbols, also: (0x2028, 0x2029)
-   if (ch >= 1280) // 0x0500
-   {
-      if ((ch >= 0x1e00) && (ch <= 0x1eff))
-      {
-         return ch;
-      }
-      if ((ch >= 8220) && (ch <= 8223))
-      {
-         return 0x0022;
-      }
-      if (ch == 0xfeff) // check if UTF8-BOM is first symbol
-      {
-         return 0;
-      }
-      return space;
-   }
-   return ch;
 }
 
 std::string translate_wstr(const std::wstring& wstr)
