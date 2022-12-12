@@ -490,7 +490,7 @@ int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words) cons
          continue;
       }
 
-      if (args_->verbose > 2)
+      if (args_->verbose > 3)
       {
          line.push_back(wid);
       }
@@ -536,7 +536,7 @@ int32_t Dictionary::getLine(
       continue;
     }
 
-    if (args_->verbose > 2)
+    if (args_->verbose > 3)
     {
        line.push_back(wid);
     }

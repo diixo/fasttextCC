@@ -428,7 +428,7 @@ void FastText::supervised(
 
 void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& line)
 {
-   if (args_->verbose > 2)
+   if (args_->verbose > 3)
    {
       printf("cbow::>>");
       for (auto wid : line) {
@@ -454,7 +454,7 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
     }
     model_->update(bow, line, w, lr, state);
   }
-  if (args_->verbose > 2)
+  if (args_->verbose > 3)
   {
      printf("cbow::<<\n");
   }
