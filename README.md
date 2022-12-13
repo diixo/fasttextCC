@@ -144,6 +144,67 @@ At the end of optimization the program will save two files: `model.bin` and `mod
 `model.bin` is a binary file containing the parameters of the model along with the dictionary and all hyper parameters.
 The binary file can be used later to compute word vectors or to restart the optimization.
 
+
+### Nearest neighbor queries
+
+A simple way to check the quality of a word vector is to look at its nearest neighbors. This give an intuition of the type of semantic information the vectors are able to capture.
+
+This can be achieved with the nearest neighbor (nn) functionality. For example, we can query the 10 nearest neighbors of a word by running the following command:
+
+```
+$ ./fasttext nn result/fil9.bin
+Pre-computing word vectors... done.
+```
+Then we are prompted to type our query word, let us try asparagus :
+
+```
+Query word? asparagus
+beetroot 0.812384
+tomato 0.806688
+horseradish 0.805928
+spinach 0.801483
+licorice 0.791697
+lingonberries 0.781507
+asparagales 0.780756
+lingonberry 0.778534
+celery 0.774529
+beets 0.773984
+```
+
+Nice! It seems that vegetable vectors are similar. Note that the nearest neighbor is the word asparagus itself, this means that this word appeared in the dataset. What about pokemons?
+
+```
+Query word? pidgey
+pidgeot 0.891801
+pidgeotto 0.885109
+pidge 0.884739
+pidgeon 0.787351
+pok 0.781068
+pikachu 0.758688
+charizard 0.749403
+squirtle 0.742582
+beedrill 0.741579
+charmeleon 0.733625
+```
+
+Different evolution of the same Pokemon have close-by vectors! But what about our misspelled word, is its vector close to anything reasonable? Let s find out:
+
+```
+Query word? enviroment
+enviromental 0.907951
+environ 0.87146
+enviro 0.855381
+environs 0.803349
+environnement 0.772682
+enviromission 0.761168
+realclimate 0.716746
+environment 0.702706
+acclimatation 0.697196
+ecotourism 0.697081
+```
+
+Thanks to the information contained within the word, the vector of our misspelled word matches to reasonable words! It is not perfect but the main information has been captured.
+
 ### Obtaining word vectors for out-of-vocabulary words
 
 The previously trained model can be used to compute word vectors for out-of-vocabulary words.
