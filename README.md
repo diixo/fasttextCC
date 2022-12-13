@@ -9,11 +9,6 @@ FastText is a library for efficient learning of word representations and sentenc
 * Filtering by using stopwords-file (added **-stopwords** option), converting symbols to lower-case if stopwords (by default).
 * Fix of handling special symbols (soft-hyphen, no-brake space, etc..)
 
-Example for **cbow**-learning:
-
-```
-$ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopwords stopwords.txt -epoch 100 -verbose 3
-```
 
 ## Table of contents
 
@@ -29,6 +24,7 @@ $ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopword
 * [Example use cases](#example-use-cases)
 * [Unsupervised learning](#unsupervised-learning)
    * [Word representation learning](#word-representation-learning)
+   * [CBOW](#cbow)
    * [Nearest neighbor queries](#nearest-neighbor-queries)
    * [Advanced reader: measure of similarity](#advanced-reader-measure-of-similarity)
    * [Word analogies](#word-analogies)
@@ -150,6 +146,15 @@ At the end of optimization the program will save two files: `model.bin` and `mod
 `model.bin` is a binary file containing the parameters of the model along with the dictionary and all hyper parameters.
 The binary file can be used later to compute word vectors or to restart the optimization.
 
+### CBOW
+
+The CBOW-model predicts the target word according to its context. The context is represented as a bag of the words contained in a fixed size window around the target word.
+
+Let us illustrate this difference with an example: given the sentence 'Poets have been mysteriously silent on the subject of cheese' and the target word 'silent', a skipgram model tries to predict the target using a random close-by word, like 'subject' or 'mysteriously'. The cbow model takes all the words in a surrounding window, like {been, mysteriously, on, the}, and uses the sum of their vectors to predict the target.
+
+```
+$ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopwords stopwords.txt -epoch 100 -verbose 3
+```
 
 ### Nearest neighbor queries
 
