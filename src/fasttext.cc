@@ -442,7 +442,7 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
   std::uniform_int_distribution<> uniform(1, args_->ws);
   for (int32_t w = 0; w < line.size(); w++)
   {
-    int32_t boundary = uniform(state.rng);
+    int32_t boundary = stopwords_ ? args_->ws : uniform(state.rng);
     bow.clear();
     for (int32_t c = -boundary; c <= boundary; c++)
     {
