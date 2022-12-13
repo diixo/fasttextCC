@@ -205,6 +205,114 @@ ecotourism 0.697081
 
 Thanks to the information contained within the word, the vector of our misspelled word matches to reasonable words! It is not perfect but the main information has been captured.
 
+### Advanced reader: measure of similarity
+
+In order to find nearest neighbors, we need to compute a similarity score between words. Our words are represented by continuous word vectors and we can thus apply simple similarities to them. In particular we use the cosine of the angles between two vectors. This similarity is computed for all words in the vocabulary, and the 10 most similar words are shown. Of course, if the word appears in the vocabulary, it will appear on top, with a similarity of 1.
+
+### Word analogies
+
+In a similar spirit, one can play around with word analogies. For example, we can see if our model can guess what is to France, and what Berlin is to Germany.
+
+This can be done with the analogies functionality. It takes a word triplet (like Germany Berlin France) and outputs the analogy:
+
+```
+$ ./fasttext analogies result/fil9.bin
+Pre-computing word vectors... done.
+Query triplet (A - B + C)? berlin germany france
+paris 0.896462
+bourges 0.768954
+louveciennes 0.765569
+toulouse 0.761916
+valenciennes 0.760251
+montpellier 0.752747
+strasbourg 0.744487
+meudon 0.74143
+bordeaux 0.740635
+pigneaux 0.736122
+```
+
+The answer provided by our model is Paris, which is correct. Let's have a look at a less obvious example:
+
+```
+Query triplet (A - B + C)? psx sony nintendo
+gamecube 0.803352
+nintendogs 0.792646
+playstation 0.77344
+sega 0.772165
+gameboy 0.767959
+arcade 0.754774
+playstationjapan 0.753473
+gba 0.752909
+dreamcast 0.74907
+famicom 0.745298
+```
+
+Our model considers that the nintendo analogy of a psx is the gamecube, which seems reasonable. Of course the quality of the analogies depend on the dataset used to train the model and one can only hope to cover fields only in the dataset.
+
+### Importance of character n-grams
+
+Using subword-level information is particularly interesting to build vectors for unknown words. For example, the word gearshift does not exist on Wikipedia but we can still query its closest existing words:
+
+```
+Query word? gearshift
+gearing 0.790762
+flywheels 0.779804
+flywheel 0.777859
+gears 0.776133
+driveshafts 0.756345
+driveshaft 0.755679
+daisywheel 0.749998
+wheelsets 0.748578
+epicycles 0.744268
+gearboxes 0.73986
+```
+
+Most of the retrieved words share substantial substrings but a few are actually quite different, like cogwheel. You can try other words like sunbathe or grandnieces.
+
+Now that we have seen the interest of subword information for unknown words, let's check how it compares to a model that does not use subword information. To train a model without subwords, just run the following command:
+
+```
+$ ./fasttext skipgram -input data/fil9 -output result/fil9-none -maxn 0
+```
+
+The results are saved in result/fil9-non.vec and result/fil9-non.bin.
+
+To illustrate the difference, let us take an uncommon word in Wikipedia, like accomodation which is a misspelling of accommodation. Here is the nearest neighbors obtained without subwords:
+
+```
+$ ./fasttext nn result/fil9-none.bin
+Query word? accomodation
+sunnhordland 0.775057
+accomodations 0.769206
+administrational 0.753011
+laponian 0.752274
+ammenities 0.750805
+dachas 0.75026
+vuosaari 0.74172
+hostelling 0.739995
+greenbelts 0.733975
+asserbo 0.732465
+```
+
+The result does not make much sense, most of these words are unrelated. On the other hand, using subword information gives the following list of nearest neighbors:
+
+```
+Query word? accomodation
+accomodations 0.96342
+accommodation 0.942124
+accommodations 0.915427
+accommodative 0.847751
+accommodating 0.794353
+accomodated 0.740381
+amenities 0.729746
+catering 0.725975
+accomodate 0.703177
+hospitality 0.701426
+```
+
+The nearest neighbors capture different variation around the word accommodation. We also get semantically related words such as amenities or catering.
+
+
 ### Obtaining word vectors for out-of-vocabulary words
 
 The previously trained model can be used to compute word vectors for out-of-vocabulary words.
