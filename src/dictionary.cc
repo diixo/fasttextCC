@@ -470,7 +470,7 @@ void Dictionary::reset(std::wistream& in) const
   }
 }
 
-int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words) const
+int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words, std::shared_ptr<Dictionary> stopwords) const
 {
    std::string token;
    int32_t ntokens = 0;
@@ -483,6 +483,11 @@ int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words) cons
    while (readWord(in, token))
    {
       ntokens++;
+
+      if (stopwords->find(token))
+      {
+         break;
+      }
 
       int32_t h = find_id(token);
       int32_t wid = word2int_[h];

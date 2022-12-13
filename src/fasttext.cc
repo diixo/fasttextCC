@@ -756,7 +756,7 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback)
          {
             if (stopwords_)
             {
-               localTokenCount += dict_->getLine(wifs, line);
+               localTokenCount += dict_->getLine(wifs, line, stopwords_);
             }
             else
             {
