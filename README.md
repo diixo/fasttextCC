@@ -131,6 +131,7 @@ For further information and introduction see python/README.md
 This library has two main use cases: word representation learning and text classification.
 These were described in the two papers [1](#enriching-word-vectors-with-subword-information) and [2](#bag-of-tricks-for-efficient-text-classification).
 
+## Unsupervised learning
 ### Word representation learning
 
 In order to learn word vectors, as described in [1](#enriching-word-vectors-with-subword-information), do:
@@ -348,6 +349,7 @@ $ ./word-vector-example.sh
 
 will compile the code, download data, compute word vectors and evaluate them on the rare words similarity dataset RW [Thang et al. 2013].
 
+## Supervised learning
 ### Text classification
 
 This library can also be used to train supervised text classifiers, for instance for sentiment analysis.
