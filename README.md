@@ -12,9 +12,6 @@ FastText is a library for efficient learning of word representations and sentenc
 
 ## Table of contents
 
-* [Resources](#resources)
-   * [FAQ](#faq)
-   * [Cheatsheet](#cheatsheet)
 * [Requirements](#requirements)
 * [Building fastText](#building-fasttext)
    * [Getting the source code](#getting-the-source-code)
@@ -39,19 +36,7 @@ FastText is a library for efficient learning of word representations and sentenc
    * [FastText.zip: Compressing text classification models](#fasttextzip-compressing-text-classification-models)
 * [License](#license)
 
-## Resources
-
-### FAQ
-
-You can find [answers to frequently asked questions](https://fasttext.cc/docs/en/faqs.html#content) on our [website](https://fasttext.cc/).
-
-### Cheatsheet
-
-We also provide a [cheatsheet](https://fasttext.cc/docs/en/cheatsheet.html#content) full of useful one-liners.
-
 ## Requirements
-
-We are continuously building and testing our library, CLI and Python bindings under various docker images using [circleci](https://circleci.com/).
 
 Generally, **fastText** builds on modern Mac OS and Linux distributions.
 Since it uses some C++11 features, it requires a compiler with good C++11 support.
