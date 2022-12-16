@@ -121,7 +121,7 @@ These were described in the two papers [1](#enriching-word-vectors-with-subword-
 
 * Negative-sampling loss = `-loss ns`, default for unsupervised.
 * Softmax loss = `-loss softmax`, default for supervised.
-* OneVsAll loss = `-loss one-vs-all` or `-loss ova`.
+* One-vs-all loss = `-loss ova`.
 * Hierarchical softmax loss = `-loss hs`.
 
 ## Unsupervised learning
