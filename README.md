@@ -147,7 +147,7 @@ The CBOW-model predicts the target word according to its context. The context is
 Let us illustrate this difference with an example: given the sentence 'Poets have been mysteriously silent on the subject of cheese' and the target word 'silent', a skipgram model tries to predict the target using a random close-by word, like 'subject' or 'mysteriously'. The cbow model takes all the words in a surrounding window, like {been, mysteriously, on, the}, and uses the sum of their vectors to predict the target.
 
 ```
-$ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopwords stopwords.txt -epoch 100 -verbose 3
+$ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopwords stopwords.txt -epoch 100 -loss softmax -maxn 0
 ```
 
 ### Nearest neighbor queries
