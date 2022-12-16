@@ -19,6 +19,7 @@ FastText is a library for efficient learning of word representations and sentenc
    * [Building fastText using cmake](#building-fasttext-using-cmake)
    * [Building fastText for Python](#building-fasttext-for-python)
 * [Example use cases](#example-use-cases)
+* [Loss functions](#loss-functions)
 * [Unsupervised learning](#unsupervised-learning)
    * [Word representation learning](#word-representation-learning)
    * [CBOW](#cbow)
@@ -115,6 +116,13 @@ For further information and introduction see python/README.md
 
 This library has two main use cases: word representation learning and text classification.
 These were described in the two papers [1](#enriching-word-vectors-with-subword-information) and [2](#bag-of-tricks-for-efficient-text-classification).
+
+## Loss-functions
+
+Negative-sampling loss = **ns**, default for unsupervised.
+Softmax loss = **softmax**, default for supervised.
+OneVsAll loss = **one-vs-all** or **ova**.
+Hierarchical softmax loss = **hs**.
 
 ## Unsupervised learning
 ### Word representation learning
