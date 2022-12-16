@@ -119,10 +119,10 @@ These were described in the two papers [1](#enriching-word-vectors-with-subword-
 
 ## Loss-functions
 
-Negative-sampling loss = **ns**, default for unsupervised.
-Softmax loss = **softmax**, default for supervised.
-OneVsAll loss = **one-vs-all** or **ova**.
-Hierarchical softmax loss = **hs**.
+* Negative-sampling loss = **ns**, default for unsupervised.
+* Softmax loss = **softmax**, default for supervised.
+* OneVsAll loss = **one-vs-all** or **ova**.
+* Hierarchical softmax loss = **hs**.
 
 ## Unsupervised learning
 ### Word representation learning
