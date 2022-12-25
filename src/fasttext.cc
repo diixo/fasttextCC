@@ -438,26 +438,27 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
       printf("\n");
    }
 
-  std::vector<int32_t> bow;
-  std::uniform_int_distribution<> uniform(1, args_->ws);
-  for (int32_t w = 0; w < line.size(); w++)
-  {
-    int32_t boundary = stopwords_ ? args_->ws : uniform(state.rng);
-    bow.clear();
-    for (int32_t c = -boundary; c <= boundary; c++)
-    {
-      if (c != 0 && w + c >= 0 && w + c < line.size())
+   std::vector<int32_t> bow;
+   std::uniform_int_distribution<> uniform(1, args_->ws);
+   for (int32_t w = 0; w < line.size(); w++)
+   {
+      int32_t boundary = stopwords_ ? args_->ws : uniform(state.rng);
+      bow.clear();
+      for (int32_t c = -boundary; c <= boundary; c++)
       {
-        const std::vector<int32_t>& ngrams = dict_->getSubwords(line[w + c]);
-        bow.insert(bow.end(), ngrams.cbegin(), ngrams.cend());
+         int32_t wc = w + c;
+         if (c != 0 && wc >= 0 && wc < line.size())
+         {
+            const std::vector<int32_t>& ngrams = dict_->getSubwords(line[wc]);
+            bow.insert(bow.end(), ngrams.cbegin(), ngrams.cend());
+         }
       }
-    }
-    model_->update(bow, line, w, lr, state);
-  }
-  if (args_->verbose > 3)
-  {
-     printf("cbow::<<\n");
-  }
+      model_->update(bow, line, w, lr, state);
+   }
+   if (args_->verbose > 3)
+   {
+      printf("cbow::<<\n");
+   }
 }
 
 void FastText::skipgram(
