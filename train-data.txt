@@ -1,5 +1,19 @@
-Native Protocols the - the library implements the native protocols needed to communicate with services running on iOS devices. Due to the reimplemention it does not depend on using or bundling any existing libraries from Apple.
+Native Protocols - library implements the native protocols needed to communicate with services running on iOS devices. 
+Due to the reimplemention it does not depend on using or bundling any existing libraries from Apple.
 Cross-Platform - the C-language programming language enables cross-platform use of the library. It has already been built and run on  Linux,  Mac,  Windows,  Android and embedded  ARM SoCs.
 The architecture of the library and dependencies has been designed with an OOP approach in mind. Thus bindings for other programming languages are easier to create and allow an OOP based API.
 Many command-line utilities come bundled with the library that allow interacting with iOS device services already. This covers retrieving basic device information up to restoring official firmware images.
 Devices that have "Wifi Sync" enabled can be accessed wirelessly and do not require a wired USB connection anymore with iOS.
+Due to being in development since 2007 the library supports the range from the first to the latest iOS device. This is an achievement of many years of research and development.
+
+Scalability being integrated by popular community projects as well as large implementations which interact with more than 10.000+ of devices provide a good reference point for high scalability and efficiency of this solution.
+
+Control devices running latest iOS firmware.
+The library has been architected for easy access to native device features using an object-oriented higher-level API.
+
+This allows interacting with various native device service APIs to manage Apps, manage Backup, manage Filesystem, manage Debugging, manage Activation, manage Provisioning, manage SpringBoard, manage Syslog, manage Firmware Updates and much more.
+
+You can also use the bundled command-line utilities for these if you do not actually develop an application.
+
+Our growing community created a wide variety of applications, language bindings, binary builds, integrations and other resources that can be helpful. 
+Below is a collection of links to some of the most popular resources and related people.
