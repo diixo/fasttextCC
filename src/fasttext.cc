@@ -450,6 +450,12 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
          if (c != 0 && wc >= 0 && wc < line.size())
          {
             const std::vector<int32_t>& ngrams = dict_->getSubwords(line[wc]);
+            //if (!ngrams.empty() && line.size() > 1 && wc == 1)
+            //{
+            //   std::string str0 = dict_->getWord(*ngrams.begin());
+            //   std::string str1 = dict_->getWord(line[1]);
+            //   printf("%s-%s\n", str0.c_str(), str1.c_str());
+            //}
             bow.insert(bow.end(), ngrams.cbegin(), ngrams.cend());
          }
       }
@@ -908,7 +914,8 @@ void FastText::abort()
 {
   try {
     throw AbortError();
-  } catch (AbortError&) {
+  }
+  catch (AbortError&) {
     trainException_ = std::current_exception();
   }
 }
