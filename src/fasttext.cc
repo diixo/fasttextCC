@@ -39,11 +39,9 @@ std::shared_ptr<Loss> FastText::createLoss(std::shared_ptr<Matrix>& output)
   switch (lossName)
   {
     case loss_name::hs:
-      return std::make_shared<HierarchicalSoftmaxLoss>(
-          output, getTargetCounts());
+      return std::make_shared<HierarchicalSoftmaxLoss>(output, getTargetCounts());
     case loss_name::ns:
-      return std::make_shared<NegativeSamplingLoss>(
-          output, args_->neg, getTargetCounts());
+      return std::make_shared<NegativeSamplingLoss>(output, args_->neg, getTargetCounts());
     case loss_name::softmax:
       return std::make_shared<SoftmaxLoss>(output);
     case loss_name::ova:
@@ -899,7 +897,8 @@ void FastText::train(const Args& args, const TrainCallback& callback)
 
   if (!args_->pretrainedVectors.empty()) {
     input_ = getInputMatrixFromFile(args_->pretrainedVectors);
-  } else {
+  }
+  else {
     input_ = createRandomMatrix();
   }
   output_ = createTrainOutputMatrix();

@@ -46,9 +46,8 @@ Model::Model(
    , normalizeGradient_(normalizeGradient)
 {}
 
-void Model::computeHidden(const std::vector<int32_t>& input, State& state) const
+void Model::computeHidden(const std::vector<int32_t>& input, Vector& hidden) const
 {
-  Vector& hidden = state.hidden;
   hidden.zero();
   for (auto it = input.cbegin(); it != input.cend(); ++it)
   {
@@ -71,7 +70,7 @@ void Model::predict(
     throw std::invalid_argument("k needs to be 1 or higher!");
   }
   heap.reserve(k + 1);
-  computeHidden(input, state);
+  computeHidden(input, state.hidden);
 
   loss_->predict(k, threshold, heap, state);
 }
@@ -86,7 +85,7 @@ void Model::update(
   if (input.size() == 0) {
     return;
   }
-  computeHidden(input, state);
+  computeHidden(input, state.hidden);
 
   Vector& grad = state.grad;
   grad.zero();

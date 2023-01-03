@@ -68,7 +68,7 @@ class Model {
       int32_t targetIndex,
       real lr,
       State& state);
-  void computeHidden(const std::vector<int32_t>& input, State& state) const;
+  void computeHidden(const std::vector<int32_t>& input, Vector& hidden) const;
 
   real std_log(real) const;
 
