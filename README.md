@@ -443,8 +443,6 @@ The following arguments for quantization are optional:
   -dsub               size of each sub-vector [2]
 ```
 
-Defaults may vary by mode. (Word-representation modes `skipgram` and `cbow` use a default `-minCount` of 5.)
-
 ## References
 
 Please cite [1](#enriching-word-vectors-with-subword-information) if using this code for learning word representations or [2](#bag-of-tricks-for-efficient-text-classification) if using for text classification.
