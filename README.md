@@ -120,7 +120,7 @@ These were described in the two papers [1](#enriching-word-vectors-with-subword-
 ## Unsupervised learning
 ### Word representation learning
 
-Word-representation modes skipgram and cbow use a default **-minCount** = 5.
+Word-representation modes **skipgram** and **cbow** use a default **-minCount** = 5.
 
 In order to learn word vectors, as described in [1](#enriching-word-vectors-with-subword-information), do:
 
