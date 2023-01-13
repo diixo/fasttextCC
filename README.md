@@ -14,7 +14,6 @@ FastText is a library for efficient learning of word representations and sentenc
 
 * [Requirements](#requirements)
 * [Building fastText](#building-fasttext)
-   * [Getting the source code](#getting-the-source-code)
    * [Building fastText using make (preferred)](#building-fasttext-using-make-preferred)
    * [Building fastText using cmake](#building-fasttext-using-cmake)
    * [Building fastText for Python](#building-fasttext-for-python)
@@ -69,12 +68,6 @@ If these requirements make it impossible for you to use fastText, please open an
 
 We discuss building the latest stable version of fastText.
 
-### Getting the source code
-
-You can find our [latest stable release](https://github.com/facebookresearch/fastText/releases/latest) in the usual place.
-
-There is also the master branch that contains all of our most recent work, but comes along with all the usual caveats of an unstable branch. You might want to use this if you are a developer or power-user.
-
 ### Building fastText using make (preferred)
 
 ```
@@ -126,6 +119,8 @@ These were described in the two papers [1](#enriching-word-vectors-with-subword-
 
 ## Unsupervised learning
 ### Word representation learning
+
+Word-representation modes skipgram and cbow use a default **-minCount** = 5.
 
 In order to learn word vectors, as described in [1](#enriching-word-vectors-with-subword-information), do:
 
