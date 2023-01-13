@@ -297,12 +297,12 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
           c == '\f' || c == '\0')
       {
          const size_t prevsz = word.size();
-         rtrim("?!.;", word);
+         rtrim("?!.,:;-", word);
          if (prevsz != word.size())
          {
             c = '\n';
          }
-         trim("'-,:)/(\"", word);
+         trim("'/)(\"", word);
 
          if (word.empty())
          {
@@ -486,7 +486,8 @@ int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words, std:
 
       if (stopwords->find(token))
       {
-         break;
+         continue;
+         //break;
       }
 
       int32_t h = find_id(token);
@@ -495,7 +496,11 @@ int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words, std:
          continue;
       }
 
-      if (args_->verbose > 3)
+      if (ntokens > MAX_LINE_SIZE || token == EOS) {
+         break;
+      }
+
+      if (args_->verbose > 1)
       {
          line.push_back(wid);
       }
@@ -504,15 +509,12 @@ int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words, std:
       {
          words.push_back(wid);
       }
-      if (ntokens > MAX_LINE_SIZE || token == EOS) {
-         break;
-      }
    }
    if (!line.empty()) {
       printf(">>");
       for (auto wid : line) {
          const std::string& str = words_[wid].word;
-         printf(" %s", str.c_str());
+         printf(" %s[%d]", str.c_str(), wid);
       }
       printf(" <%d>\n", ntokens);
    }
