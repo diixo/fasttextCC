@@ -60,10 +60,6 @@ For the python bindings (see the subdirectory python) you will need:
 * NumPy & SciPy
 * [pybind11](https://github.com/pybind/pybind11)
 
-One of the oldest distributions we successfully built and tested the Python bindings under is [Debian jessie](https://www.debian.org/releases/jessie/).
-
-If these requirements make it impossible for you to use fastText, please open an issue and we will try to accommodate you.
-
 ## Building fastText
 
 We discuss building the latest stable version of fastText.
@@ -120,7 +116,7 @@ These were described in the two papers [1](#enriching-word-vectors-with-subword-
 ## Unsupervised learning
 ### Word representation learning
 
-Word-representation modes **skipgram** and **cbow** use a default **-minCount** = 5.
+Word-representation modes **skipgram** and **cbow** use a default **-minCount** = 5, where **minCount** is minimal number of word occurences.
 
 In order to learn word vectors, as described in [1](#enriching-word-vectors-with-subword-information), do:
 
