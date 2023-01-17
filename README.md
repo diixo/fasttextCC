@@ -15,8 +15,8 @@ FastText is a library for efficient learning of word representations and sentenc
 * [Requirements](#requirements)
 * [Building fastText](#building-fasttext)
    * [Building fastText using make (preferred)](#building-fasttext-using-make-preferred)
-   * [Building fastText using cmake](#building-fasttext-using-cmake)
-   * [Building fastText for Python](#building-fasttext-for-python)
+   * [Building and installing fastText using cmake](#building-fasttext-using-cmake)
+   * [Building and installing fastText for Python](#building-fasttext-for-python)
 * [Example use cases](#example-use-cases)
 * [Loss functions](#loss-functions)
 * [Unsupervised learning](#unsupervised-learning)
@@ -74,7 +74,7 @@ $ make
 This will produce object files for all the classes as well as the main binary `fasttext`.
 If you do not plan on using the default system-wide compiler, update the two macros defined at the beginning of the Makefile (CC and INCLUDES).
 
-### Building fastText using cmake
+### Building and installing fastText using cmake
 
 For now this is not part of a release, so you will need to clone the master branch.
 
@@ -87,13 +87,14 @@ $ make && make install
 
 This will create the fasttext binary and also all relevant libraries (shared, static, PIC).
 
-### Building fastText for Python
+### Building and installing fastText for Python
 
 For now this is not part of a release, so you will need to clone the master branch.
 
 ```
 $ git clone https://github.com/facebookresearch/fastText.git
 $ cd fastText
+$ make
 $ pip install .
 ```
 
