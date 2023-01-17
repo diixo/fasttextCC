@@ -143,7 +143,7 @@ $ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopword
 
 ### Printing word vectors
 
-Searching and printing word vectors directly from the fil9.vec file is cumbersome. Fortunately, there is a print-word-vectors functionality in fastText.
+Searching and printing word vectors directly from the `fil9.vec` file is cumbersome. Fortunately, there is a `print-word-vectors` functionality in fastText.
 
 For example, we can print the word vectors of words asparagus, pidgey and yellow with the following command:
 
@@ -152,6 +152,27 @@ $ echo "asparagus pidgey yellow" | ./fasttext print-word-vectors result/fil9.bin
 asparagus 0.46826 -0.20187 -0.29122 -0.17918 0.31289 -0.31679 0.17828 -0.04418 ...
 pidgey -0.16065 -0.45867 0.10565 0.036952 -0.11482 0.030053 0.12115 0.39725 ...
 yellow -0.39965 -0.41068 0.067086 -0.034611 0.15246 -0.12208 -0.040719 -0.30155 ...
+```
+
+By using Python:
+
+```
+>>> [model.get_word_vector(x) for x in ["asparagus", "pidgey", "yellow"]]
+[array([-0.25751096, -0.18716481,  0.06921121,  0.06455903,  0.29168844,
+        0.15426874, -0.33448914, -0.427215  ,  0.7813013 , -0.10600132,
+        ...
+        0.37090245,  0.39266172, -0.4555302 ,  0.27452755,  0.00467369],
+      dtype=float32),
+ array([-0.20613593, -0.25325796, -0.2422259 , -0.21067499,  0.32879013,
+        0.7269511 ,  0.3782259 ,  0.11274897,  0.246764  , -0.6423613 ,
+        ...
+        0.46302193,  0.2530962 , -0.35795924,  0.5755718 ,  0.09843876],
+      dtype=float32),
+ array([-0.304823  ,  0.2543754 , -0.2198013 , -0.25421786,  0.11219151,
+        0.38286993, -0.22636674, -0.54023844,  0.41095474, -0.3505803 ,
+        ...
+        0.54788435,  0.36740595, -0.5678512 ,  0.07523401, -0.08701935],
+      dtype=float32)]
 ```
 
 A nice feature is that you can also query for words that did not appear in your data! Indeed words are represented by the sum of its substrings. As long as the unknown word is made of known substrings, there is a representation of it!
