@@ -22,6 +22,7 @@ FastText is a library for efficient learning of word representations and sentenc
 * [Unsupervised learning](#unsupervised-learning)
    * [Word representation learning](#word-representation-learning)
    * [CBOW](#cbow)
+   * [Printing word vectors](#printing-word-vectors)
    * [Nearest neighbor queries](#nearest-neighbor-queries)
    * [Advanced reader: measure of similarity](#advanced-reader-measure-of-similarity)
    * [Word analogies](#word-analogies)
@@ -139,6 +140,29 @@ Let us illustrate this difference with an example: given the sentence 'Poets hav
 ```
 $ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopwords stopwords.txt -epoch 100 -loss softmax -maxn 0
 ```
+
+### Printing word vectors
+
+Searching and printing word vectors directly from the fil9.vec file is cumbersome. Fortunately, there is a print-word-vectors functionality in fastText.
+
+For example, we can print the word vectors of words asparagus, pidgey and yellow with the following command:
+
+```
+$ echo "asparagus pidgey yellow" | ./fasttext print-word-vectors result/fil9.bin
+asparagus 0.46826 -0.20187 -0.29122 -0.17918 0.31289 -0.31679 0.17828 -0.04418 ...
+pidgey -0.16065 -0.45867 0.10565 0.036952 -0.11482 0.030053 0.12115 0.39725 ...
+yellow -0.39965 -0.41068 0.067086 -0.034611 0.15246 -0.12208 -0.040719 -0.30155 ...
+```
+
+A nice feature is that you can also query for words that did not appear in your data! Indeed words are represented by the sum of its substrings. As long as the unknown word is made of known substrings, there is a representation of it!
+
+As an example let's try with a misspelled word:
+
+```
+$ echo "enviroment" | ./fasttext print-word-vectors result/fil9.bin
+```
+
+You still get a word vector for it! But how good it is? Let's find out in the next sections!
 
 ### Nearest neighbor queries
 
