@@ -31,7 +31,7 @@ const std::string Dictionary::EOW = ">";
 
 Dictionary::Dictionary(std::shared_ptr<Args> args)
     : args_(args),
-      word2int_(MAX_VOCAB_SIZE, -1),
+      word2int_((args->vocabSz > 0 ? args->vocabSz : MAX_VOCAB_SIZE), -1),
       size_(0),
       nwords_(0),
       nlabels_(0),

@@ -94,5 +94,7 @@ class Args
   int64_t getAutotuneModelSize() const;
 
   static constexpr double kUnlimitedModelSize = -1.0;
+
+  size_t vocabSz;
 };
 } // namespace fasttext
