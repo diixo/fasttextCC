@@ -11,7 +11,27 @@
 #include <locale>
 #include <cassert>
 
+#include "fasttext.h"
+#include "utils.h"
+
 const int VOCAB_SZ = 547;
+
+void test()
+{
+   auto ft = std::make_shared<fasttext::FastText>();
+   auto args = std::make_shared<fasttext::Args>();
+   args->minCount = 1;
+   args->maxn = 0;
+   args->input = "train.txt";
+   args->epoch = 100;
+   args->lrUpdateRate = args->epoch / 10;
+   args->dim = 10;
+   args->loss = fasttext::loss_name::softmax;
+   args->model = fasttext::model_name::cbow;
+   args->thread = 1;
+   ft->train(*args);
+   printPredictions(ft->getNN("programming", 10), true, true);
+}
 
 int main()
 {

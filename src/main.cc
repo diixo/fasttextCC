@@ -210,32 +210,6 @@ void test(const std::vector<std::string>& args)
   exit(0);
 }
 
-void printPredictions(
-    const std::vector<std::pair<real, std::string>>& predictions,
-    bool printProb,
-    bool multiline)
-{
-  bool first = true;
-  for (const auto& prediction : predictions)
-  {
-    if (!first && !multiline)
-    {
-      std::cout << " ";
-    }
-    first = false;
-    std::cout << prediction.second;
-    if (printProb) {
-      std::cout << " " << prediction.first;
-    }
-    if (multiline) {
-      std::cout << std::endl;
-    }
-  }
-  if (!multiline) {
-    std::cout << std::endl;
-  }
-}
-
 void predict(const std::vector<std::string>& args)
 {
   if (args.size() < 4 || args.size() > 6)

@@ -10,6 +10,8 @@
 
 #include <iomanip>
 #include <ios>
+#include <iostream>
+#include <string>
 
 namespace fasttext {
 
@@ -57,3 +59,30 @@ bool compareFirstLess(const std::pair<double, double>& l, const double& r)
 } // namespace utils
 
 } // namespace fasttext
+
+
+void printPredictions(
+   const std::vector<std::pair<fasttext::real, std::string>>& predictions,
+   bool printProb,
+   bool multiline)
+{
+   bool first = true;
+   for (const auto& prediction : predictions)
+   {
+      if (!first && !multiline)
+      {
+         std::cout << " ";
+      }
+      first = false;
+      std::cout << prediction.second;
+      if (printProb) {
+         std::cout << " " << prediction.first;
+      }
+      if (multiline) {
+         std::cout << std::endl;
+      }
+   }
+   if (!multiline) {
+      std::cout << std::endl;
+   }
+}

@@ -1,0 +1,26 @@
+c++ programming language
+java programming language
+python programming language
+javascript programming language
+php programming language
+c# programming language
+go-language programming language
+c-language programming language
+kotlin programming language
+swift programming language
+
+data structures 
+data algorithms
+machine learning
+data-science
+searching algorithm
+graph algorithm
+pattern searching
+geometric algorithm
+mathematical
+bitwise algorithm
+randomized algorithm
+greedy algorithm
+dynamic programming
+
+mathematics number system algebra trigonometry statistics probability geometry mensuration calculus

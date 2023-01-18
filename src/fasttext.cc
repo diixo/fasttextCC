@@ -130,10 +130,11 @@ void FastText::getWordVector(Vector& vec, const std::string& word) const
   vec.zero();
   for (int i = 0; i < ngrams.size(); i++)
   {
-    addInputVector(vec, ngrams[i]);
+      //std::string str = dict_->getWord(ngrams[i]);
+      addInputVector(vec, ngrams[i]);
   }
   if (ngrams.size() > 0) {
-    vec.mul(1.0 / ngrams.size());
+      vec.mul(1.0 / ngrams.size());
   }
 }
 
@@ -655,7 +656,7 @@ std::vector<std::pair<real, std::string>> FastText::getNN(
 
   getWordVector(query, word);
 
-  lazyComputeWordVectors();
+  lazyComputeWordVectors();   // calculate DenseMtrix
   assert(wordVectors_);
   return getNN(*wordVectors_, query, k, {word});
 }

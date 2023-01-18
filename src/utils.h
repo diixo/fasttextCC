@@ -15,6 +15,7 @@
 #include <fstream>
 #include <ostream>
 #include <vector>
+#include <utility>
 
 #if defined(__clang__) || defined(__GNUC__)
 #define FASTTEXT_DEPRECATED(msg) __attribute__((__deprecated__(msg)))
@@ -70,3 +71,8 @@ bool compareFirstLess(const std::pair<double, double>& l, const double& r);
 } // namespace utils
 
 } // namespace fasttext
+
+void printPredictions(
+   const std::vector<std::pair<fasttext::real, std::string>>& predictions,
+   bool printProb,
+   bool multiline);
