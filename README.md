@@ -187,9 +187,9 @@ You still get a word vector for it! But how good it is? Let's find out in the ne
 
 ### Nearest neighbor queries
 
-A simple way to check the quality of a word vector is to look at its nearest neighbors. This give an intuition of the type of semantic information the vectors are able to capture.
+A simple way to check the quality of a word vector is to look at its `nearest neighbors`. This give an intuition of the type of semantic information the vectors are able to capture.
 
-This can be achieved with the nearest neighbor (nn) functionality. For example, we can query the 10 nearest neighbors of a word by running the following command:
+This can be achieved with the `nearest neighbor` (nn) functionality. For example, we can query the 10 nearest neighbors of a word by running the following command:
 
 ```
 $ ./fasttext nn result/fil9.bin
