@@ -104,6 +104,11 @@ std::shared_ptr<const DenseMatrix> FastText::getOutputMatrix() const
   return std::dynamic_pointer_cast<DenseMatrix>(output_);
 }
 
+int32_t FastText::getWordsAmount() const
+{
+   return dict_->nwords();
+}
+
 int32_t FastText::getWordId(const std::string& word) const
 {
   return dict_->getId(word);
@@ -624,7 +629,7 @@ std::vector<std::pair<std::string, Vector>> FastText::getNgramVectors(
   return result;
 }
 
-void FastText::precomputeWordVectors(DenseMatrix& wordVectors)
+void FastText::precomputeWordVectors(DenseMatrix& wordVectors) const
 {
   Vector vec(args_->dim);
   wordVectors.zero();
@@ -633,7 +638,7 @@ void FastText::precomputeWordVectors(DenseMatrix& wordVectors)
     std::string word = dict_->getWord(i);
     getWordVector(vec, word);
     real norm = vec.norm();
-    if (norm > 0) {
+    if (norm > 0.0) {
       wordVectors.addVectorToRow(vec, i, 1.0 / norm);
     }
   }
@@ -935,7 +940,8 @@ void FastText::startThreads(const TrainCallback& callback)
          [=]() { trainThread(i, callback); }
       ));
     }
-  } else {
+  }
+  else {
     // webassembly can't instantiate `std::thread`
     trainThread(0, callback);
   }
