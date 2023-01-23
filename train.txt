@@ -8,7 +8,29 @@ go-language programming language
 c-language programming language
 kotlin programming language
 swift programming language
-
+.................................
+c++ software language
+java software language
+python software language
+javascript software language
+php software language
+c# software language
+go-language software language
+c-language software language
+kotlin software language
+swift software language
+.................................
+c++ development language
+java development language
+python development language
+javascript development language
+php development language
+c# development language
+go-language development language
+c-language development language
+kotlin development language
+swift development language
+.................................
 data structures 
 data algorithms
 machine learning
