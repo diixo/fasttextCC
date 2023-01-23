@@ -296,7 +296,7 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
       if (c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == '\v' ||
           c == '\f' || c == '\0')
       {
-         ltrim("#@_", word);
+         ltrim("#@", word);
          const size_t prevsz = word.size();
          rtrim("?!.,:;-", word);
          if (prevsz != word.size())
