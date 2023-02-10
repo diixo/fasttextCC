@@ -416,7 +416,7 @@ The argument `k` is optional, and equal to `1` by default.
 See `classification-example.sh` for an example use case.
 In order to reproduce results from the paper [2](#bag-of-tricks-for-efficient-text-classification), run `classification-results.sh`, this will download all the datasets and reproduce the results from Table 1.
 
-If you want to compute vector representations of sentences or paragraphs, please use:
+If you want to compute vector representations of sentences or paragraphs, please use `print-sentence-vectors`:
 
 ```
 $ ./fasttext print-sentence-vectors model.bin < text.txt
