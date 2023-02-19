@@ -84,6 +84,11 @@ size_t Dictionary::size() const
    return words_.size();
 }
 
+const entry& Dictionary::operator[](size_t index) const
+{
+   return words_[index];
+}
+
 bool Dictionary::find(const std::string& w) const
 {
    int32_t word2intsize = word2int_.size();

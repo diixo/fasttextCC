@@ -115,6 +115,7 @@ class Dictionary
   void init();
   bool find(const std::string& w) const;
   size_t size() const;
+  const entry& operator[](size_t index) const;
 };
 
 } // namespace fasttext
