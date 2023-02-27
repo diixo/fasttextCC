@@ -25,22 +25,22 @@ void test()
    args->input = "train.txt";
    args->epoch = 100;
    args->lrUpdateRate = args->epoch / 10;
-   args->dim = 20;
+   args->dim = 10;
    args->loss = fasttext::loss_name::softmax;
    args->model = fasttext::model_name::cbow;
    args->thread = 1;
    args->vocabSz = 47;
-   args->ws = 3;
+   args->ws = 1;
    ft->train(*args);
-   printPredictions(ft->getNN("programming", 5), true, true);
 
-   std::unique_ptr<fasttext::DenseMatrix> wordVectors(
-      new fasttext::DenseMatrix(ft->getWordsAmount(), args->dim));  //outputMatrix
-   ft->precomputeWordVectors(*wordVectors);
+   printPredictions(ft->getNN("c++", 10), true, true);
 }
 
 int main()
 {
+   test();
+   return 0;
+
    auto args = std::make_shared<fasttext::Args>();
    args->minCount = 1;
    args->stopwords = "stopwords.txt";

@@ -128,6 +128,8 @@ class FastText
 
   void getSentenceVector(std::wistream& in, Vector& vec);
 
+  void getSentenceVector(std::wstring& in, fasttext::Vector& svec) const;
+
   void quantize(const Args& qargs, const TrainCallback& callback = {});
 
   std::tuple<int64_t, double, double>

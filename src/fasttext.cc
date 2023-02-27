@@ -132,6 +132,10 @@ int32_t FastText::getLabelId(const std::string& label) const
 void FastText::getWordVector(Vector& vec, const std::string& word) const
 {
   const std::vector<int32_t>& ngrams = dict_->getSubwords(word);
+  if (ngrams.size() == 1)
+  {
+     assert(dict_->getId(word) == ngrams.front());
+  }
   vec.zero();
   for (int i = 0; i < ngrams.size(); i++)
   {
@@ -432,6 +436,7 @@ void FastText::supervised(
 
 void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& line)
 {
+   lr = 0.05;
    if (args_->verbose > 3)
    {
       printf("cbow::>>");
@@ -447,21 +452,29 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
    for (int32_t w = 0; w < line.size(); w++)
    {
       int32_t boundary = stopwords_ ? args_->ws : uniform(state.rng);
+      boundary = args_->ws;
       bow.clear();
       for (int32_t c = -boundary; c <= boundary; c++)
       {
          int32_t wc = w + c;
          if (c != 0 && wc >= 0 && wc < line.size())
          {
+            //printf("%s -> [%s]\n", dict_->getWord(line[w]).c_str(), dict_->getWord(line[wc]).c_str());
+            
             const std::vector<int32_t>& ngrams = dict_->getSubwords(line[wc]);
-            //if (!ngrams.empty() && line.size() > 1 && wc == 1)
-            //{
-            //   std::string str0 = dict_->getWord(*ngrams.begin());
-            //   std::string str1 = dict_->getWord(line[1]);
-            //   printf("%s-%s\n", str0.c_str(), str1.c_str());
-            //}
+
             bow.insert(bow.end(), ngrams.cbegin(), ngrams.cend());
          }
+      }
+      if (args_->verbose > 3)
+      {
+         printf("[%s] --> bow\n", dict_->getWord(line[w]).c_str());
+
+         for (int i = 0; i < bow.size(); i++)
+         {
+            printf("%s ", dict_->getWord(bow[i]).c_str());
+         }
+         printf("\n");
       }
       model_->update(bow, line, w, lr, state);
    }
@@ -564,6 +577,38 @@ bool FastText::predictLine(
   return true;
 }
 
+void FastText::getSentenceVector(std::wstring& wword, fasttext::Vector& svec) const
+{/*
+   svec.zero();
+
+   const std::vector<int32_t>& ngrams = dict_->getSubwords(translate_wstr(wword));
+
+   if (ngrams.size() == 1 && ngrams.front() > 0)
+   {
+      auto id = ngrams.front();
+      const std::string str = dict_->getWord(ngrams.front());
+      Vector vec(args_->dim);
+
+      for (int32_t i = 1; i < dict_->nwords(); i++)
+      {
+         addInputVector(vec, id);
+         if (i != id && (*dict_)[i].type == entry_type::word)
+         {
+            addInputVector(vec, i);
+
+            const real norm = vec.norm(); //???
+            printf("%s:%s = %f\n", str.c_str(), (*dict_)[i].word.c_str(), norm);
+            //if (norm > 0) {
+            //   vec.mul(1.0 / norm);
+            //   svec.addVector(vec);
+            //}
+         }
+         vec.zero();
+      }
+   }
+   */
+}
+
 void FastText::getSentenceVector(std::wistream& in, fasttext::Vector& svec)
 {
   svec.zero();
@@ -657,11 +702,11 @@ std::vector<std::pair<real, std::string>> FastText::getNN(
     const std::string& word,
     int32_t k)
 {
-  Vector query(args_->dim);
+  lazyComputeWordVectors();   // calculate DenseMtrix
 
+  Vector query(args_->dim);
   getWordVector(query, word);
 
-  lazyComputeWordVectors();   // calculate DenseMtrix
   assert(wordVectors_);
   return getNN(*wordVectors_, query, k, {word});
 }

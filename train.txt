@@ -1,48 +1,29 @@
-c++ programming language
-java programming language
-python programming language
-javascript programming language
-php programming language
-c# programming language
-go-language programming language
-c-language programming language
-kotlin programming language
-swift programming language
-.................................
-c++ software language
-java software language
-python software language
-javascript software language
-php software language
-c# software language
-go-language software language
-c-language software language
-kotlin software language
-swift software language
-.................................
-c++ development language
-java development language
-python development language
-javascript development language
-php development language
-c# development language
-go-language development language
-c-language development language
-kotlin development language
-swift development language
-.................................
-data structures 
-data algorithms
-machine learning
-data-science
-searching algorithm
-graph algorithm
-pattern searching
-geometric algorithm
-mathematical
-bitwise algorithm
-randomized algorithm
-greedy algorithm
-dynamic programming
+learn c++ language
+learn java language
+learn python language
+learn javascript language
+learn php language
+learn c# language
+learn golang language
+learn c-language language
+learn kotlin language
+learn swift language
+
+software development skill
+
+data structures entity
+data algorithms entity
+machine learning entity
+data-science entity
+searching algorithm entity
+graph algorithm entity
+pattern searching entity
+geometric algorithm entity
+mathematical data entity
+bitwise algorithm entity
+randomized algorithm entity
+greedy algorithm entity
+dynamic programming entity
 
 mathematics number system algebra trigonometry statistics probability geometry mensuration calculus
+
