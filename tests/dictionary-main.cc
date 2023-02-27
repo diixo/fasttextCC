@@ -34,6 +34,8 @@ void test()
    ft->train(*args);
 
    printPredictions(ft->getNN("c++", 10), true, true);
+   float similarity = ft->getSimilarity("c++", "python");
+   similarity = 0.f;
 }
 
 int main()

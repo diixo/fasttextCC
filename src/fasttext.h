@@ -128,7 +128,7 @@ class FastText
 
   void getSentenceVector(std::wistream& in, Vector& vec);
 
-  void getSentenceVector(std::wstring& in, fasttext::Vector& svec) const;
+  real getSimilarity(const std::string src1, const std::string src2);
 
   void quantize(const Args& qargs, const TrainCallback& callback = {});
 

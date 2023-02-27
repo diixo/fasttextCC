@@ -452,7 +452,6 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
    for (int32_t w = 0; w < line.size(); w++)
    {
       int32_t boundary = stopwords_ ? args_->ws : uniform(state.rng);
-      boundary = args_->ws;
       bow.clear();
       for (int32_t c = -boundary; c <= boundary; c++)
       {
@@ -577,36 +576,28 @@ bool FastText::predictLine(
   return true;
 }
 
-void FastText::getSentenceVector(std::wstring& wword, fasttext::Vector& svec) const
-{/*
-   svec.zero();
+real FastText::getSimilarity(const std::string src1, const std::string src2)
+{
+   lazyComputeWordVectors();   // calculate DenseMtrix
 
-   const std::vector<int32_t>& ngrams = dict_->getSubwords(translate_wstr(wword));
+   Vector query(args_->dim);
+   getWordVector(query, src1);
 
-   if (ngrams.size() == 1 && ngrams.front() > 0)
-   {
-      auto id = ngrams.front();
-      const std::string str = dict_->getWord(ngrams.front());
-      Vector vec(args_->dim);
+   assert(wordVectors_);
 
-      for (int32_t i = 1; i < dict_->nwords(); i++)
-      {
-         addInputVector(vec, id);
-         if (i != id && (*dict_)[i].type == entry_type::word)
-         {
-            addInputVector(vec, i);
-
-            const real norm = vec.norm(); //???
-            printf("%s:%s = %f\n", str.c_str(), (*dict_)[i].word.c_str(), norm);
-            //if (norm > 0) {
-            //   vec.mul(1.0 / norm);
-            //   svec.addVector(vec);
-            //}
-         }
-         vec.zero();
-      }
+   real queryNorm = query.norm();
+   if (std::abs(queryNorm) < 1e-8) {
+      queryNorm = 1;
    }
-   */
+
+   real similarity = 0.f;
+   const int32_t id = dict_->getId(src2);
+   if (id >= 0)
+   {
+      similarity = wordVectors_->dotRow(query, id);
+      similarity = similarity / queryNorm;
+   }
+   return similarity;
 }
 
 void FastText::getSentenceVector(std::wistream& in, fasttext::Vector& svec)
@@ -708,6 +699,7 @@ std::vector<std::pair<real, std::string>> FastText::getNN(
   getWordVector(query, word);
 
   assert(wordVectors_);
+
   return getNN(*wordVectors_, query, k, {word});
 }
 

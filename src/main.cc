@@ -142,6 +142,15 @@ void printAnalogiesUsage()
             << std::endl;
 }
 
+void printSimilarityUsage()
+{
+   std::cout << "usage: fasttext analogies <model> <word1> <word2>\n\n"
+      << "  <model>      model filename\n"
+      << "  <word1>      source word1\n"
+      << "  <word2>      source word2\n"
+      << std::endl;
+}
+
 void printDumpUsage()
 {
   std::cout << "usage: fasttext dump <model> <option>\n\n"
@@ -371,6 +380,36 @@ void analogies(const std::vector<std::string> args)
   exit(0);
 }
 
+void similarity(const std::vector<std::string> args)
+{
+   std::string word1;
+   std::string word2;
+   if (args.size() != 3)
+   {
+      printSimilarityUsage();
+      exit(EXIT_FAILURE);
+   }
+
+   std::string prompt("word1 vs word2:");
+   FastText fasttext;
+   std::string model(args[2]);
+   std::cout << "Loading model " << model << std::endl;
+   fasttext.loadModel(model);
+
+   while (true)
+   {
+      std::cout << "<word1> : ";
+      std::cin >> word1;
+      std::cout << "<word2> : ";
+      std::cin >> word2;
+
+      std::cout<< "similarity=" << fasttext.getSimilarity(word1, word2) << std::endl;
+
+      std::cout << prompt;
+   }
+   exit(0);
+}
+
 void train(const std::vector<std::string> args)
 {
   Args a = Args();
@@ -502,6 +541,10 @@ int main(int argc, char** argv)
   else if (command == "analogies")
   {
     analogies(args);
+  }
+  else if (command == "similarity")
+  {
+     similarity(args);
   }
   else if (command == "predict" || command == "predict-prob")
   {
