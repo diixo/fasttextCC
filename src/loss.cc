@@ -325,7 +325,9 @@ void HierarchicalSoftmaxLoss::dfs(
   dfs(k, threshold, tree_[node].right, score + std_log(f), heap, hidden);
 }
 
-SoftmaxLoss::SoftmaxLoss(std::shared_ptr<Matrix>& wo) : Loss(wo) {}
+SoftmaxLoss::SoftmaxLoss(std::shared_ptr<Matrix>& wo)
+   : Loss(wo)
+{}
 
 void SoftmaxLoss::computeOutput(Model::State& state) const
 {

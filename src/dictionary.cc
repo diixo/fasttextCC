@@ -189,7 +189,7 @@ bool Dictionary::discard(int32_t id, real rand) const
   if (args_->model == model_name::sup) {
     return false;
   }
-  return rand > pdiscard_[id];
+  return rand/1.618f > 0.5f;  // pdiscard_[id];
 }
 
 int32_t Dictionary::getId(const std::string& w, uint32_t h) const {
@@ -290,7 +290,7 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
    if (unget_ch > 0)
    {
       unget_ch = 0;
-      word = "</s>";
+      word = "";// < / s>";
       return true;
    }
    unget_ch = 0;
@@ -313,7 +313,7 @@ bool Dictionary::readWord(std::wistream& in, std::string& word) const
          if (word.empty())
          {
             if (c == '\n') {
-               word = "</s>";
+               word = "";// < / s>";
                return true;
             }
             continue;
@@ -543,6 +543,10 @@ int32_t Dictionary::getLine(
 
   while (readWord(in, token))
   {
+     if (token.empty())
+     {
+        break;
+     }
     int32_t h = find_id(token);
     int32_t wid = word2int_[h];
     if (wid < 0) {
