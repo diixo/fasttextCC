@@ -14,6 +14,8 @@
 #include "fasttext.h"
 #include "utils.h"
 
+using namespace fasttext;
+
 const int VOCAB_SZ = 547;
 
 void test()
@@ -23,7 +25,7 @@ void test()
    args->minCount = 1;
    args->maxn = 0;
    args->input = "train.txt";
-   args->epoch = 100;
+   args->epoch = 200;
    args->lrUpdateRate = args->epoch / 10;
    args->dim = 10;
    args->loss = fasttext::loss_name::softmax;
@@ -34,7 +36,7 @@ void test()
    ft->train(*args);
 
    printPredictions(ft->getNN("c++", 10), true, true);
-   float similarity = ft->getSimilarity("c++", "python");
+   real similarity = ft->getSimilarity("c++", "python");
    similarity = 0.f;
 }
 

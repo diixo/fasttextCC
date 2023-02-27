@@ -9,7 +9,7 @@ learn c-language language
 learn kotlin language
 learn swift language
 
-c++ skill language
+c++ language skills
 
 data structures entity
 data algorithms entity
