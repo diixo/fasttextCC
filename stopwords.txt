@@ -492,6 +492,7 @@ whereabouts
 whereafter
 whereas
 whereby
+wherefor
 wherefore
 wherefrom
 wherein
@@ -504,6 +505,7 @@ whether
 which
 which's
 whichever
+whichsoever
 while
 whither
 who

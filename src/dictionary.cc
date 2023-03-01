@@ -506,7 +506,7 @@ int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words, std:
          break;
       }
 
-      if (args_->verbose > 1)
+      if (args_->verbose > 3)
       {
          line.push_back(wid);
       }
