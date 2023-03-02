@@ -43,6 +43,7 @@ void printUsage()
          "word\n"
       << "  nn                      query for nearest neighbors\n"
       << "  analogies               query for analogies\n"
+      << "  similarity              query similarity of word vs another word\n"
       << "  dump                    dump arguments,dictionary,input/output "
          "vectors\n"
       << std::endl;
