@@ -162,6 +162,8 @@ class FastText
       const std::string& wordB,
       const std::string& wordC);
 
+  void readStopwords(const Args& args);
+
   void train(const Args& args, const TrainCallback& callback = {});
 
   void abort();

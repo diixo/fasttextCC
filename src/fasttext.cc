@@ -452,6 +452,8 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
    for (int32_t w = 0; w < line.size(); w++)
    {
       int32_t boundary = stopwords_ ? args_->ws : uniform(state.rng);
+      assert(boundary > 0);
+
       bow.clear();
       for (int32_t c = -boundary; c <= boundary; c++)
       {
@@ -467,7 +469,7 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
       }
       if (args_->verbose > 3)
       {
-         printf("[%s] --> bow\n", dict_->getWord(line[w]).c_str());
+         printf("[%s] --> ::bow\n", dict_->getWord(line[w]).c_str());
 
          for (int i = 0; i < bow.size(); i++)
          {
@@ -776,6 +778,7 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback)
    //utils::seek(ifs, threadId * utils::size(ifs) / args_->thread);
 
    Model::State state(args_->dim, output_->size(0), threadId + args_->seed);
+   real progress = 0;
 
    const int64_t ntokens = dict_->ntokens();
    int64_t localTokenCount = 0;
@@ -785,7 +788,14 @@ void FastText::trainThread(int32_t threadId, const TrainCallback& callback)
    {
       while (keepTraining(ntokens))
       {
-         real progress = real(tokenCount_) / (args_->epoch * ntokens);
+         real t_progress = real(tokenCount_) / (args_->epoch * ntokens);
+         if (int32_t(100.f * progress) != int32_t(100.f * t_progress))
+         {
+            printf("...progress=%d\n", int32_t(100.f * t_progress));
+         }
+
+         progress = t_progress;
+
          if (callback && ((callbackCounter++ % 64) == 0))
          {
             double wst;
@@ -905,16 +915,11 @@ std::shared_ptr<Matrix> FastText::createTrainOutputMatrix() const
   return output;
 }
 
-void FastText::train(const Args& args, const TrainCallback& callback)
+void FastText::readStopwords(const Args& args)
 {
-  args_ = std::make_shared<Args>(args);
-  dict_ = std::make_shared<Dictionary>(args_);
-  if (args_->input == "-") {
-    // manage expectations
-    throw std::invalid_argument("Cannot use stdin for training!");
-  }
-  if (!(args_->stopwords.empty()))
-  {
+   args_->stopwords = args.stopwords;
+   if (!(args_->stopwords.empty()))
+   {
       auto s_arg = std::make_shared<Args>(args);
       s_arg->minCount = 1;
       stopwords_ = std::make_shared<Dictionary>(s_arg);
@@ -927,7 +932,18 @@ void FastText::train(const Args& args, const TrainCallback& callback)
       wsw.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
       stopwords_->readFromFile(wsw, nullptr);
       wsw.close();
+   }
+}
+
+void FastText::train(const Args& args, const TrainCallback& callback)
+{
+  args_ = std::make_shared<Args>(args);
+  dict_ = std::make_shared<Dictionary>(args_);
+  if (args_->input == "-") {
+    // manage expectations
+    throw std::invalid_argument("Cannot use stdin for training!");
   }
+  readStopwords(args);
 
   std::wifstream wis(cstr_to_wstr(args_->input));
   if (!wis.is_open()) {

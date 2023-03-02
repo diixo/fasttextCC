@@ -14,7 +14,7 @@ c++ language skills
 data structures entity
 data algorithms entity
 machine learning entity
-data-science entity
+data science entity
 searching algorithm entity
 graph algorithm entity
 pattern searching entity
@@ -25,5 +25,46 @@ randomized algorithm entity
 greedy algorithm entity
 dynamic programming entity
 
+data science specialist
+
 mathematics number system algebra trigonometry statistics probability geometry mensuration calculus
 
+**********************
+computer science
+
+programming languages
+
+emerging technology
+personal technology
+
+machine learning
+
+
+risk management
+
+data centers
+data science
+
+artificial intelligence 
+
+privacy compliance
+software development
+productivity software
+
+software bots
+general computing
+
+containers virtualization
+enterprise applications
+
+business alignment
+mobile-app development
+cloud computing
+home network
+neural network
+cloud-native development
+
+network management research
+infrastructure management research
+data management research
+human-resource management research
