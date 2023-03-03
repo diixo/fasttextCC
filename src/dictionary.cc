@@ -488,6 +488,10 @@ int32_t Dictionary::getLine(std::wistream& in, std::vector<int32_t>& words, std:
 
    while (readWord(in, token))
    {
+      if (token.empty())
+      {
+         break;
+      }
       if (stopwords->find(token))
       {
          continue;
