@@ -102,6 +102,28 @@ void Model::update(
   }
 }
 
+int32_t Model::getMaxTargetId(const std::vector<int32_t>& input, State& state) const
+{
+   int32_t idm = -1;
+   real vm = -1.f;
+
+   computeHidden(input, state.hidden);
+
+   Vector& grad = state.grad;
+   grad.zero();
+
+   loss_->computeOutput(state);
+   for (int32_t i = 0; i < state.output.size(); i++)
+   {
+      if (state.output[i] > vm)
+      {
+         vm = state.output[i];
+         idm = i;
+      }
+   }
+   return idm;
+}
+
 real Model::std_log(real x) const
 {
   return std::log(x + 1e-5);

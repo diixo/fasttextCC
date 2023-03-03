@@ -16,7 +16,7 @@
 
 using namespace fasttext;
 
-const int VOCAB_SZ = 547;
+const int VOCAB_SZ = 577;
 
 void test()
 {
@@ -31,11 +31,27 @@ void test()
    args->loss = fasttext::loss_name::softmax;
    args->model = fasttext::model_name::cbow;
    args->thread = 1;
-   args->vocabSz = 47;
+   args->vocabSz = 97;
    args->ws = 1;
    ft->train(*args);
 
-   printPredictions(ft->getNN("c++", 10), true, true);
+   //************************
+   real threshold = 0.f;
+   bool printProb = true;
+
+   std::vector<std::pair<real, std::string>> predictions;
+   std::string str;
+   while (true)
+   {
+      std::cout << "predictLine:" << std::endl;
+      getline(std::cin, str);
+      if (!ft->predictLine(str + " ", predictions, threshold))
+      {
+         break;
+      }
+      printPredictions(predictions, printProb, false);
+   }
+
    real similarity = ft->getSimilarity("c++", "python");
    similarity = 0.f;
 }

@@ -554,6 +554,64 @@ void FastText::predict(
   model_->predict(words, k, threshold, predictions, state);
 }
 
+bool FastText::predictLine(const std::string& in, std::vector<std::pair<real, std::string>>& predictions, real threshold)
+{
+   if (args_->model != model_name::cbow) {
+      throw std::invalid_argument("Model needs to be cbow!");
+   }
+   std::vector<int32_t> words, labels;
+   std::set <int32_t> wuniq;
+
+   const char ALLOWABLE[] = { '\n', '\r', '\t', ' ', ',', '!', ';', '\"', '|', 0x00ab, 0x00bb, 0x00a0 };
+
+   int32_t i0 = -1;
+   for (size_t i = 0; i < in.size(); i++)
+   {
+      if (strchr(ALLOWABLE, in[i]))
+      {
+         if (i - i0 > 1)
+         {
+            i0++;
+            std::string str(&in[i0], i - i0);
+            int32_t id = dict_->getId(std::string(&in[i0], i - i0));
+            if (id >= 0)
+            {
+               words.push_back(id);
+               wuniq.insert(id);
+            }
+         }
+         i0 = i;
+      }
+   }
+   if (words.size() <= 1)
+   {
+      return false;
+   }
+
+   int32_t max_id = -1;
+   real similarity = threshold;
+
+   for (int32_t i = 0; i < dict_->size(); i++)
+   {
+      auto id = dict_->getId(dict_->getWord(i));
+
+      if (wuniq.find(id) == wuniq.end())
+      {
+         Model::State state(args_->dim, output_->size(0), 0);
+         if (model_->getMaxTargetId(words, state) == id)
+         {
+            predictions.push_back(std::pair<real, std::string>(state.output[id], dict_->getWord(i)));
+            if (state.output[id] > similarity)
+            {
+               similarity = state.output[id];
+               max_id = id;
+            }
+         }
+      }
+   }
+   return true;
+}
+
 bool FastText::predictLine(
     std::wistream& in,
     std::vector<std::pair<real, std::string>>& predictions,
