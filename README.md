@@ -22,6 +22,7 @@ FastText is a library for efficient learning of word representations and sentenc
 * [Unsupervised learning](#unsupervised-learning)
    * [Word representation learning](#word-representation-learning)
    * [CBOW](#cbow)
+   * [Prediction](#prediction)
    * [Printing word vectors](#printing-word-vectors)
    * [Nearest neighbor queries](#nearest-neighbor-queries)
    * [Advanced reader: measure of similarity](#advanced-reader-measure-of-similarity)
