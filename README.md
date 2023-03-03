@@ -140,6 +140,13 @@ Let us illustrate this difference with an example: given the sentence 'Poets hav
 ```
 $ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopwords stopwords.txt -epoch 100 -loss softmax -maxn 0
 ```
+### Prediction
+
+Predict next word for sequence words (only for CBOW-mode)
+
+```
+./fasttext predict-next result/fil9.bin
+```
 
 ### Printing word vectors
 
