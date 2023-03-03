@@ -1,0 +1,945 @@
+deep feature-based text clustering and its explanation
+keywords
+data analysis
+data mining
+learning artificial intelligence
+neural nets
+pattern clustering
+recurrent neural nets
+text analysis
+bag of words model
+classic text clustering algorithms
+convolutional neural networks
+deep feature based text clustering framework
+deep learning approach
+deep learning based models
+existing text clustering algorithms
+ignores text
+lack supervised signals
+recurrent neural networks
+sequence information
+sequence representations
+sparsity problems
+state of the art pretrained language model
+text clustering tasks
+text data analysis
+text mining community
+task analysis
+computational modeling
+feature extraction
+clustering algorithms
+semantics
+data models
+recurrent neural networks
+deep learning
+explanation model
+feature extraction
+text clustering
+transfer learning
+abstract
+text clustering is a critical step in text data analysis and has been extensively studied by the text mining community
+most existing text clustering algorithms are based on the bag-of-words model
+which faces the high-dimensional and sparsity problems and ignores text structural and sequence information
+deep learning-based models such as convolutional neural networks and recurrent neural networks regard texts as sequences but lack supervised signals and explainable results
+in this paper
+we propose a deep feature-based text clustering dftc framework that incorporates pretrained text encoders into text clustering tasks
+this model
+which is based on sequence representations
+breaks the dependency on supervision
+the experimental results show that our model outperforms classic text clustering algorithms and the state-of-the-art pretrained language model bert
+on almost all the considered datasets
+in addition
+the explanation of the clustering results is significant for understanding the principles of the deep learning approach
+our proposed clustering framework includes an explanation module that can help users understand the meaning and quality of the clustering results
+introduction
+clustering models attempt to classify objects based on their similarity in a valid representation
+the first step in classic text clustering is to map texts into a bag-of-words-based feature vector space
+which is the most commonly used text feature representation
+the vector space models have been widely applied in several fields
+such as document organization
+corpus summarization
+and content-based recommender systems
+specialized clustering algorithms
+such as k-means clustering
+are then applied in the given feature space to group text into clusters
+however
+the high-dimensional bag-of-words feature matrix does not record the texts sequence information or rich contextual information
+moreover
+when the text is short
+the bag-of-words features are sparse
+making it difficult for the model to infer the semantics of the text
+several text-feature enhancement models are available for text clustering
+for example
+guan proposed a similarity metric for text clustering to capture the structural information of texts
+and song applied a concept knowledge base to extend text features and thus enhanced the semantics of the representation
+however
+these models are still based on feature space models and thus cannot solve the problem of poor semantic understanding
+different from feature-based text clustering algorithms
+model-based clustering algorithms view the clustering process as a generative model
+for example
+in the latent dirichlet allocation lda model
+topics are first generated from texts
+then
+words in the text are generated from topics
+lda can be regarded as a text clustering model because it computes a posterior topic distribution given a texts word distribution
+the collapsed gibbs sampling algorithm for the dirichlet multinomial mixture model gsdmm first generates a cluster label
+then
+the words in the text are generated from the label
+these generative models consider only the words in the current text and ignore all irrelevant words in the vocabulary
+hence
+a generative model avoids the processing of high-dimensional and sparse feature matrices
+however
+these models assume that the words in a given text are independent
+and they ignore the information contained in the word sequence order
+which is essential for understanding a document
+for example
+the two sentences “you trust him
+” and “you betray his trust
+” have entirely different semantics
+but generative or bag-of-words-based models cannot distinguish the word trust because of the loss of contextual information
+taking sequence information and contextual information into account when designing a model will facilitate the model text understanding ability and thus improve the model clustering performance
+in recent studies
+many deep learning-based text representation models have been proposed that consider both text contextual information and sequence information
+the distributed representations produced by deep learning models have been successful applied in many natural language processing nlp tasks
+such as text classification
+language recognition
+and machine translation
+several deep learning-based text clustering models have been proposed that regard a text as a sequence instead of a bag of words
+for example
+xu proposed a deep convolutional neural network-based short text clustering model
+but the model supervised signals come from word co-occurrence relations
+furthermore
+wang proposed a semi-supervised deep text clustering model in which the clustering performance relies entirely on a set of given labeled instances
+due to the absence of a supervised signal in text clustering
+deep learning-based models are challenging to train
+and most current research is based largely on a self-taught approach to obtain clustering results
+hence
+these models have a poor data adaptation ability
+and similarity measures are crucial to the quality of the clustering results
+recent studies have demonstrated that models learned from a large-scale corpus can produce meaningful distributed embeddings for sentences
+conneau trained a bidirectional long short-term memory bilstm network on a natural language inference corpus and found that the pretrained model could produce sentence embeddings suitable for other tasks sentence classification and image caption ranking
+in addition
+peters discovered that features extracted by a pretrained neural language model are suitable for sequence tagging
+in the embedded feature space
+the euclidean distance between sentence embeddings is sufficient to measure the similarity of the input
+therefore
+the quality of a pretrained deep text encoder is assumed to be highly suitable for text clustering tasks
+furthermore
+as a type of transfer learning
+a knowledge transfer model can be used to transfer knowledge from one domain to boost the performance in another similar domain
+yosinski proposed the pretrained alexnet model to transfer knowledge to other image classification tasks
+compared to training a model from scratch
+transferring knowledge from a pretrained deep model is more efficient and appropriate because of the improved generalization capacity and high convergence speed
+additionally
+pretrained deep models also contribute prior knowledge to new tasks
+for example
+howard proposed deploying a pretrained deep language model for text classification and presented several strategies for fully utilizing pretrained models
+bidirectional encoder representations from transformers bert
+a pretrained deep bidirectional language model proposed by google
+achieved state-of-the-art sota results on a wide range of tasks
+including question answering and language inference
+radford gpt2 model was transferred and applied to several text generation tasks and achieved excellent performance
+however
+no studies have deployed a pretrained deep model to text clustering
+hence
+we introduce a pretrained deep model to text clustering
+we propose a novel deep feature-based text clustering dftc framework and explore the suitability of the deep text encoder for text clustering
+in contrast to the bag-of-words model
+the pretrained deep text encoder directly processes text word by word and provides a semantic representation
+moreover
+the pretrained deep text encoder solves the feature sparsity problem
+we compare our model with classic text clustering models
+including tf-idf-based k-means
+lda
+the gsdmm
+and the sota pretrained language model bert
+our model outperforms these models on almost all considered corpora
+in addition
+we propose a text clustering results explanation tcre model that can capture the clusters semantics and provide a qualitative evaluation of the clustering results
+the tcre model results provide evidence of how the deep pretrained encoder-based clustering model outperforms the previously mentioned text clustering models
+the contributions of this paper are as follows
+we propose a novel deep feature-based text clustering framework dftc that integrates sequence information and pretrained text encoders to introduce deep semantic features
+we propose the tcre model which illustrates the effectiveness of the learned deep semantic features
+it verifies the inverted pyramid style with indication words and their positions
+we show that our dftc framework outperforms classic text clustering algorithms and sota pretrained language models on the considered datasets
+the remainder of this paper is organized as follows
+section introduces the related work
+section describes our dftc framework
+section describes the tcre model
+section analyzes our models computational complexity
+section introduces the setup of our experiments
+section illustrates the experimental results and presents a discussion
+finally
+section concludes our paper
+related work
+we split our analysis of the related work into two main areas
+existing deep learning-based clustering models are surveyed
+and the recurrent neural network rnn is introduced
+deep learning-based clustering models
+feature transformation is a critical step for clustering models
+unlike traditional linear feature transformation methods
+deep neural networks can transform data into more clustering-friendly representations due to their inherent ability to perform highly nonlinear transformations
+in recent years
+several studies have explored the use of deep neural networks in clustering tasks
+xie designed a heuristic loss function for clustering tasks and proposed the deep embedding clustering dec model
+to improve the stability of the dec model
+feng introduced an additional decoder layer into the dec model
+yang proposed a deep clustering network dcn model that combined k-means clustering and an autoencoder to learn a k-means-friendly latent space
+the models in these three works achieved good performance on several datasets
+however
+they rely heavily on the training quality of the autoencoders
+moreover
+the performance of these models degrades substantially when the autoencoder collapses
+jiang proposed a deep generative model called vade for a data clustering task
+but the model is so complex that both its time complexity and its space complexity are untrackable
+several advances have also been made in text clustering
+xu proposed a deep learning-based short text clustering model that relies on bag-of-words signals
+and wang proposed a semi-supervised deep text clustering model in which the clustering performance relies entirely on a set of given labeled instances
+however
+to the best of our knowledge
+no research has applied a pretrained deep learning model to text clustering and proposed an explanation of the effectiveness of the deep learning approach
+recurrent neural network
+in contrast to feedforward neural networks
+rnns can process variable-length sequences
+an rnn maintains a hidden state as the context and updates the hidden state given a token
+formally
+given a sequence
+an rnn generates hidden states
+by means of the function
+is the rnn cell function
+when training a vanilla rnn
+various problems can occur
+such as vanishing and exploding gradients
+thus
+rnns cannot model long dependencies
+hochreiter proposed the utilization of lstm to mitigate these problems by introducing several gates
+in later research
+several minor modifications were made to the original lstm cell
+in this paper
+we adopt the lstm framework described
+the lstm cell function is defined as follows
+are weight parameters
+are bias vectors
+and
+is a sigmoid function defined as
+is a memory cell that remembers previous input information and avoids the gradient vanishing problem
+is the input gate
+which controls the input information flowing into the cell
+is the output gate
+which controls the output information flowing from the cell
+is the forget gate used to control the flow of information from the previous memory cell to the next memory cell
+lstm outperforms the vanilla rnn in certain tasks
+such as the neural language model
+the deep feature-based text clustering framework
+given a corpus is a sentence or paragraph
+our objective is to group the texts into several clusters
+the framework of our dftc model is shown in figure
+for each text our framework first uses a pretrained text encoder to extract features
+we adopt two pretrained deep text encoders
+namely
+the language model and the language inference model infersent
+both of which are based on lstm
+in the second step
+a feature normalization module employs normalization techniques layer normalization to ensure the features numerical stability and to ensure that the feature vectors satisfy specific qualities
+such as conforming to a normal distribution
+in the last step
+the normalized features are fed into the selected clustering algorithm
+such as k-means
+after obtaining the cluster partition results
+the explanation model produces representative words for each cluster
+the deep text feature extractor
+we consider two deep feature extractors
+the neural language model and infersent
+we will introduce both extractors as follows
+the goal of the language model is to estimate the probability function of a sequence of words from a large unlabeled corpus
+given a sequence of
+the probability of the sequence can be written as is the probability of the current word given the word sequence
+most neural language models are built from an lstm network and are trained to predict the next word given the previous words
+in step
+the current time-series state
+is modeled by the function
+is the lstm cell function and
+is the word representation of word
+the probability function can be estimated by the softmax function
+however
+due to the unstable gradient problem of lstm
+a backward language model can supplement the complementary information neglected by the forward language model
+in contrast to forward language models
+backward language models predict the previous word given the following words
+the probability function of the sequence can be decomposed as is used to estimate
+which is similar to the forward language model
+due to the complementarity between the forward language model and the backward language model
+we have the token representation
+where is the concatenation operator
+due to the variability of the sentence or document length
+we cannot directly feed the context features into the subsequent modules
+hence
+we must fuse the context features into a fixed-size feature vector
+in this paper
+we adopt three feature fusion strategies
+max-pooling selects the maximum value over each dimension of the dimensional hidden context feature vectors to build a text representation
+as shown in equation
+max-pooling regards the highest value as the most important feature
+mean-pooling averages the dimensional hidden context feature vectors to the feature vector
+as shown in equation
+the idea of mean-pooling is that all context feature vectors can represent the whole text
+and the average of these vectors will reduce the noise in the model
+the last-time context feature vector captures the semantics of the whole text sequence
+hence
+we can concatenate the forward language model last feature and the backward language model last feature into a new feature vector
+is then fed into the following module
+infersent is another sentence representation model that can provide meaningful sentence embeddings given a set of sentences
+in contrast to the neural language model
+which is trained on an unlabeled corpus
+infersent is trained on a labeled natural language inference nli corpus in a supervised manner
+then
+the learned knowledge is transferred to other tasks
+the goal of the nli task is to determine whether a pair of sentences are entailed
+contradictory
+or neutral
+in the training phase
+the infersent model first encodes two sentences into two-sentence embeddings
+fuses these embeddings into a single embedding
+and finally feeds the embedding into a 3-way classifier
+the model is trained in an end-to-end manner using stochastic gradient descent sgd on the stanford natural language inference snli dataset
+infersent adopts the bilstm model with max-pooling as its sentence encoder and achieves a distinguished transfer performance on many nlp tasks
+such as text classification and sentiment analysis
+because infersent is trained on sentence information instead of paragraph or document information
+we split paragraphs into sentences and average the sentences infersent embeddings to model a paragraph
+the feature normalization module
+we use the feature normalization function to ensure that the features conform to various characteristics
+such as normality and stability
+we introduce three normalization strategies
+identity normalization
+standard normalization
+and layer normalization
+these normalization strategies are exchangeable
+identity normalization is an identity function
+given the feature vector
+in this paper
+we utilize normalization as the baseline for comparison with the other feature normalization methods
+standard normalization is a commonly used feature normalization method that applies to transform an input feature vector into a vector with one norm
+after the transformation
+the euclidean distance between two feature vectors is equivalent to the cosine distance between them
+layer normalization is implemented primarily to avoid the covariate shift problem when training a neural network
+for some feature embedding
+which is an m-dimensional vector
+layer normalization utilizes equation to normalize the input feature
+where is the mean of the elements in as shown in equation
+and is the standard variance
+as shown in equation
+after the transformation
+each element of represents a sampling from the same normal distribution
+the clustering algorithm
+our deep text clustering framework is suitable for most data clustering algorithms
+due to the brevity of the k-means algorithm
+we apply the classic k-means clustering algorithm to the extracted features in this research
+other clustering algorithms
+such as affinity propagation and self-organizing feature maps
+are also suitable in our framework
+given extracted features
+k-means clustering is used to partition the feature points into k groups
+the objective function of the k-means algorithm is where is the center of the the cluster and identifies whether the data point belongs to the cluster
+hence
+the value of is or
+and
+directly minimizing the objective function is an np-hard problem because of the discrete value of
+the most commonly used approximate algorithm is em iteration
+in the e-step
+each point is assigned to the nearest cluster center according to the distance between the data point and cluster center
+after which the value of is identified
+in the m-step
+each cluster center is computed by the following formula
+the e-step and m-step alternate iteratively until the algorithm converges
+the explanation model
+because of the unsupervised nature of text clustering algorithms
+we cannot be directly aware of each cluster meaning
+the most common explanation method for a text clustering algorithm is to compute the word frequency distribution for each cluster and use the most frequent words in a cluster to represent the cluster semantics
+we represent this kind of traditional word frequency explanation model as freq
+however
+one problem with this model is that high-frequency words are often common among several clusters
+for example
+said will be one of the highest-frequency words for each cluster when we cluster a news corpus
+moreover
+a naive method can also introduce noise
+to solve these two problems
+we introduce a novel model to adjust every word weight for each cluster adaptively
+in this study
+our proposed tcre model is illustrated in algorithm
+the inputs of the algorithm are the corpus and clustering results
+every text in a given corpus is labeled with a class id given the clustering results
+and these labels can be regarded as pseudolabels of the texts
+the main idea of our algorithm is to use a logistic classifier to fit the associations between texts and pseudolabels
+the algorithm includes two parts
+in the first part
+the tcre model maps the text in the corpus into bag-of-words features
+in contrast to ordinary text classification
+0-1 features are the inputs of the classifier instead of tf-idf features
+if a word exists in a text
+the feature value of the word is
+otherwise
+the feature value is
+stop words and low-frequency words are removed because they do not provide meaningful information
+in the second part
+the tcre model acquires indication words that express every cluster meaning
+the prediction function of the logistic regression classifier is shown in equation
+the weights of the logistic regression classifier for a cluster can be regarded as the scores of the words in the cluster
+the higher the score of a word in a cluster
+the more important that word is in the cluster
+for each cluster
+the tcre model selects the top words with the highest scores as indication words
+the explanation results can then be used to measure the quality of the clustering results and help a user understand the semantics of a cluster partition
+algorithm
+procedure of the tcre model
+input
+corpus is the corpus
+and clusterresult is the pseudo-label list
+output
+indwordslist contains the list of indication words for every cluster
+map the text into 0-1 bag-of-words features
+do split the text into tokens
+filter out stop words and low-frequency words
+map the remaining tokens into 0-1 feature vector
+append the feature vector
+obtain indication words for every cluster
+train the logistic regression classifier
+classifier on training data
+featlist is feature list cluster-result
+weight-list is the weight list whose length is the number of labels
+let weight list is classifier weights
+map into indication words and append index words into index words list and return index words list
+computational complexity analysis
+to analyze the complexity of the proposed model in detail
+we present the complexity of the dftc framework in each step
+the first and most complicated step in our framework is to achieve an effective text representation in the deep text feature extractor
+the neural language model and the infersent representation model are both dependent on the lstm network
+assuming that the dimension of the lstm model is
+and the average text length is
+the computational complexity of one layer of the lstm is
+and we assume that the height of our multiple-layer lstm model is
+hence
+our model achieves the text representation by
+the complexities of the three normalization methods
+for the clustering part
+assuming that there are text snippets
+the complexity of the k-means algorithm is
+is the number of iterations
+hence
+the total complexity of the dftc model
+our explanation model includes two steps
+the first step is to build a linear relation between different clustering results and each word in the corpus
+in this step
+we adopt a logistic model
+liblinear logistic implement has a time complexity of is the size of the corpus
+assuming the number of word features is
+constructing the model will involve a time complexity of
+the second step is to find indication words
+in this step
+the time complexity is
+hence
+the tcre model time complexity is
+experimental setup
+we first introduce five corpora and three evaluation metrics
+then
+classic text clustering algorithms and the sota pretrained language model bert are described
+datasets
+we evaluate our model on five corpora
+ag news
+dbpedia
+yahoo
+answers
+r2
+and r5
+the corpora ag news
+dbpedia
+and yahoo answers were collected and constructed
+because of the large sizes of the three corpora
+directly performing experiments on the original corpora would be time-consuming
+therefore
+we adopted abbreviated versions of the datasets
+following previous research
+we randomly selected instances for each class in each dataset
+in our preliminary experiments
+we found that the sampled balanced corpora resulted in a performance similar to that achieved with the original data
+the corpora r2 and r5 were extracted from the corpus reuters-21578 by us
+we introduce these corpora as follows
+ag news is a news categorization corpus
+constructed this corpus by choosing the top four categories from ag corpus of news articles on the web
+these texts are gathered from more than news sources by cometomyhead for more than one year of activity
+each text in the ag news corpus includes the original title and content
+there are four categories in the corpus
+world
+sports
+business and sci/tech
+the dbpedia ontology classification corpus was constructed by selecting several classes from the knowledge base dbpedias ontology by zhang
+each text snippet in the corpus is an entity description
+and its label is the entity ontological class label
+the corpus contains non-overlapping classes
+company
+educational institution
+artist
+athlete
+office holder
+means of transportation
+building
+natural place
+village
+animal
+plant
+album
+film
+and written work
+yahoo answers is a topic classification corpus extracted from the yahoo answers comprehensive questions and answers version dataset through the yahoo webscope program by zhang
+each text in the corpus includes a question and its corresponding answers
+there are ten categories
+society&culture
+science&mathematics
+health
+education&reference
+sports
+business&finance
+entertainment&music
+family&relationships
+computer&internet
+and politics&government
+the reuters-21578 corpus2 was initially collected and labeled by the carnegie group and reuters
+the corpus contains documents grouped into categories
+different from other corpora
+this corpus is highly unbalanced
+the largest category includes thousands of items
+whereas the smallest category has only a few
+following previous research
+we constructed two clustering corpora
+r2 and r5
+which include the two and five largest categories
+respectively
+the categories in corpus r2 are earn and acq
+the categories in corpus r5 are earn
+acq
+cude
+trade
+and money-fx
+in the following experiments
+we use these two unbalanced corpora to evaluate our model
+evaluation metrics
+the clustering performance is evaluated by comparing the clustering results with the given labels
+we adopt three commonly used evaluation metrics
+the clustering accuracy acc
+normalized mutual information nmi
+and adjusted rand index ari
+acc is defined as where is the ground-truth label of text i and is the label predicted by the clustering algorithm
+is a one-to-one mapping between the cluster labels and ground-truth labels
+the function outputs when the equation in curly brackets is true and outputs otherwise
+this accuracy metric takes a cluster assignment from an unsupervised algorithm and a ground-truth assignment and then finds the best matching between them
+the function can map the cluster label into its best-matched ground-truth label
+the best mapping can be efficiently computed via the hungarian algorithm
+the intent of the acc function is to compute the best matching accuracy between the two groups of labels
+and the hungarian algorithm can be used to efficiently compute the best match
+nmi is defined as where is the ground-truth label and is the label predicted by the clustering algorithm
+is the mutual information between is used to measure the relevance between them
+represents entropy
+in this function
+is used to normalize to the range of ari is defined as where is the number of all instances
+is the number of instances appearing in the predicted label and ground-truth label
+is the number of predicted label instances
+and is the number of ground-truth label instances
+the function computes the similarity between the ground-truth labels and the clustering algorithm-predicted labels and takes values in the range
+compared methods
+we compare our model with the text clustering algorithms listed below
+tf-idf-based k-means
+in this paper
+we choose the most frequently used words after removing stop words as features
+the baseline uses k-means on tf-idf features to group text into clusters
+lda
+we consider three k values
+and
+where k is the number of topics
+two approaches can be followed to utilize lda for clustering
+the first is selecting the topic with the highest topic probability as a text predicted label
+the second is to use the topic distribution as the feature and apply a data clustering model
+such as k-means
+to group the texts
+according to griffiths research
+setting the lda model parameters as generally yields good model quality
+we follow these settings in this paper
+gsdmm
+the gsdmm regards text clustering as a dirichlet multinomial mixture model that is solved by gibbs sampling
+following the original paper on the model
+we set the gsdmm hyperparameters to
+similar to lda
+we consider several k values
+and
+dec
+xie built a self-taught loss for a deep clustering model called dec
+which was not designed specifically for text clustering
+hence
+we built bag-of-words features for the dec model
+we follow the default configuration of the dec model in the original paper
+idec
+the idec model is a modified version of the dec model with an additional decoder after the middle hidden layer
+the decoder makes the training process more stable
+we adopt the default configuration of the idec model from the original paper
+stc
+the stc model is a deep short text clustering model that utilizes a convolutional neural network to learn representations from bag-of-words features
+the stc model obtains cluster partitions by employing k-means to cluster the learned representations
+bert
+the bert model is a pretrained language model proposed in
+it is based on the transformer model and has obtained sota performance on several nlp tasks far beyond the performance of existing cnn or rnn models
+to fully evaluate our model
+we utilize the bert-base model for comparison
+we adopt the pretrained bert model as a text embedding extractor
+which contains transformer blocks l=12
+for each block
+the hidden layer size h is
+and the number of self-attention heads is
+the total number of parameters in bert is approximately
+and its fine-tuning step is omitted
+before feeding the text into the bert model
+we transform the text into lowercase and tokenize it using wordpiece
+the clustering ability comparison results among these models
+clustering model can avoid the high-dimensional problem
+can avoid the sparsity problem
+contains sequence information
+or uses transferred semantic knowledge
+pretrained models
+we introduce a neural language model and infersent as the feature extractor for our text clustering framework
+for the neural language model
+we adopt the pretrained language model elmo
+which contains two bilstm layers with a residual connection from the first layer to the second layer
+the dimension of each bilstm layer is
+the final output of the bilstm is projected into a 1024-dimensional representation that is fed into the prediction layer
+conneau trained the infersent model on the snli dataset and released a pretrained model
+the encoder of which is a bilstm max-pooling network
+fixed word representations are fed into the 4096-dimensional bilstm network
+and a max-pooling layer is used to transform the intermediate representations into 4096-dimensional vectors
+experimental results discussion
+in this section
+we report our model experimental results and explain the clustering results
+in section
+we report the experimental results and compare our model with other models
+in section
+we visualize deep text features by t-sne
+which illustrates the effectiveness of the pretrained text encoder
+in section
+we report the transformed deep text features clustering performance
+in section
+we explain the clustering results obtained by our proposed tcre model
+the indication words discovered by our model can illustrate the meaning of every cluster
+comparison with other methods
+table presents the results of all models on all five datasets
+km represents the k-means clustering model
+lm and infersent represent the neural language model and the infersent model
+respectively
+i
+ln
+and n represent the identity normalization
+layer normalization and standard normalization feature transformation strategies
+respectively
+for each dataset
+we evaluate the clustering results with three metrics
+hence
+we obtain metrics for the five datasets
+the clustering models are divided into three groups
+classic bag-of-words and generative models
+bert-based models
+and the dftc models
+as shown in table
+for of the metrics
+our model outperforms the classic bag-of-words and generative models
+including tf-idf
+lda
+gsdmm
+dec
+idec
+and stc
+these experimental results illustrate the effectiveness of introducing contextual information
+furthermore
+our model outperforms bert on metrics
+which demonstrates the effectiveness of the dftc models
+we consider several configurations for our deep clustering framework
+among them
+lm+mean+n+km achieves the best performance on all the datasets except r2
+for example
+this configuration achieves an accuracy of percent
+which is percent higher than that obtained by the best compared method
+stc
+infersent ln+km achieves similar performance on ag news
+dbpedia and r2 but worse performance on yahoo answers and r5
+the gsdmm is the most robust of the four compared models
+but its performance is still far from that of our deep clustering model
+especially on ag news and dbpedia
+because most of these existing text clustering algorithms are based on bag-of-words models
+the feature space cannot fully construct the semantic space of the raw text
+and the loss of subsequent information will induce the loss of semantic information
+in addition
+text data are notoriously high-dimensional
+as the size of the corpus increases
+so does the size of the vocabulary
+the bag-of-words model cannot fully utilize long-tailed words
+thus
+its representation ability is minimal
+in contrast
+our framework is based on a deep pretrained model that can infer text semantics by contextual information
+pretraining the model from a large-scale corpus will introduce new transferred knowledge
+our model is insensitive to clustering algorithms
+although the k-means clustering algorithm is adopted
+our model also outperforms most of the sota text clustering algorithms
+text data contain some low-frequency words
+including slang
+misspelled words
+and other uncommon words
+traditional text clustering methods cannot effectively process sentences or documents with too many low-frequency words
+these outlier text data will influence text clustering algorithms performance
+for our text clustering model
+there are two mechanisms for processing these abnormal data
+first
+a pretrained deep model can infer an unknown word meaning by its context
+in contrast
+traditional text clustering cannot perceive a words contextual information because bag-of-words features lose subsequent text information
+second
+the neural language model also considers character-level information
+which considers a words lexical spelling information
+for example
+“good” and its misspelled word “goood” are considered to have similar semantics
+for the neural language model
+as shown in the previous section
+three methods are used to fuse variable-length features into fixed-sized features
+mean-pooling produces better experimental results than max-pooling and last-time
+last-time has the worst performance because an rnn cannot adequately model a sequences long-distance dependencies utilizing the last-time feature
+our framework performs feature transformation before feeding the features into the clustering algorithm
+layer normalization is the most effective strategy for the configuration of max-pooling-based feature fusion
+compared with the lm+max+i+km and infersent+i+km configurations
+lm+max+ln+km and infersent ln+km achieve substantial performance improvements because every element value of a transformed feature is very large
+and layer normalization normalizes these values to reduce the covariate shift
+for the mean-pooling-based configurations
+standard normalization and layer normalization achieve only small performance improvements because the mean-pooling strategy attempts to consider all the time inputs and because averaging operations can provide a robust feature representation
+for the yahoo answers and r2 datasets
+our proposed deep model does not achieve ideal performance
+each item in the yahoo answers dataset contains a question and several different answers that are not semantically correlated
+directly inputting these features into an lstm encoder fails to fully account for the sequence semantics
+moreover
+the text in yahoo answers contains some nonstandard internet language
+such as good and btw
+the infersent feature extractor is trained on a normative corpus
+and the neural language model is pretrained on a large-scale internet corpus
+hence
+the lm-based clustering models achieve better clustering performance than the infersent-based clustering models in this case
+other deep learning-based clustering algorithms
+namely
+dec
+idec and stc
+do not perform better than our model because these three models rely on bag-of-words features
+which ignore the sequential and structural information of the text
+moreover
+the dec and idec models are dependent on an autoencoder
+however
+autoencoder training is not a stable process
+and the performance of the encoder may degrade
+feature visualization
+the clustering experiment results from the previous section show how our clustering model outperforms bag-of-words-based and generative model-based text clustering models
+mainly because the distributed text representation built by a deep model puts similar texts in nearby positions and the euclidean distance between text features represents a semantic relation
+to verify our explanation
+we visualize the deep text encoder features and tf-idf features using a commonly used visualization method
+t-sne which maps high-dimensional features into 2d features
+for the deep text encoder features
+we use the infersent ln configuration
+fig shows the feature visualization results of our selected ag news dataset
+following the original paper in which t-sne was proposed
+we adopt a perplexity value between and
+we ultimately choose as the value by visualizing the results
+in addition
+we employ a total of iterations
+t-sne is stopped upon reaching the maximum number of iterations or when there is no change in the kl-divergence
+the learning rate is
+to visualize the result in 2d space
+the output dimension of t-sne is
+in figure
+blue
+green
+red
+and cyan represent world
+sports
+business
+and sci/tech
+respectively
+the tf-idf feature points are mixed in the center of the right plot
+and it is difficult to distinguish the different clusters
+by contrast
+the infersent feature points from the same cluster remain together in the left plot
+which clearly demonstrates that the texts represented by deep text encoder features are easier to distinguish among the clusters
+clustering using transformed deep text features
+to further verify the effectiveness of the deep features
+we use two feature selection algorithms
+namely
+a stacked denoising autoencoder and principal component analysis pca
+to distill semantic information from the extracted features and then feed the distilled features into the clustering algorithm
+in this experiment
+we select the outputs of lm+max+ln
+lm+max+n
+lm+mean+i
+lm+mean+ln
+lm+mean+n
+infersent+ln
+and infersent+n as the input features because these configurations achieve the ideal performance in the abovementioned experiments
+the dimensionality of the stacked denoising autoencoder is d-1200-1200-d
+where d is the dimension of the input features
+we adopt the same architecture for all feature configurations
+as shown in table
+the lm+mean+ln+ae+km configuration achieves an accuracy percent on the ag news dataset
+which is percent higher than the accuracy achieved by the model after removing the autoencoder
+however
+for most configurations
+deploying the autoencoder to distill features does not further improve the performance
+in addition
+introducing an autoencoder into our dftc framework increases the complexity
+for pca
+we select as the dimension of the reduced features for all configurations on all datasets
+different from the autoencoder
+pca achieves robust and ideal performance
+however
+compared to the experimental results in section
+the results acquired with the pca-enhanced features are not substantially improved
+hence
+these experimental results verify that the features extracted by the pretrained deep model are sufficient for text clustering without further processing
+explaining the clustering results
+we use the tcre model to explain the clustering results for the ag news dataset
+the explanations for the lm+mean+ln+km clustering results are shown in the first part of table
+for each clustering group
+several indication words represent the cluster and are regarded as an explanation of the clustering results
+four clustering groups are observed in the ag news dataset
+for our explanation model
+the first row of indication words includes geographical and political terms
+such as iraq and president
+which are similar to the meaning of the class label world in the ag news dataset
+the second row of indication words includes technological especially computer terms such as software and internet
+hence
+the second row represents the semantics of the class label sci/tech
+the third row includes mainly sports terms
+which represent the semantics of the class label sports
+the last row of words includes mainly economics and business terms
+which represent the semantics of the class label business
+as illustrated in the middle part of table
+the explanation of the word frequency model freq for the clustering results often includes noise words
+for example
+with the freq method
+said is an indication word for four clusters
+and new is an indication word for three clusters
+these unrelated noise words make it difficult for the user to discern the meaning of the clustering results
+hence
+the tcre model is superior to the freq model
+in general
+the position of a word in an article implies the importance of the word within that article
+for example
+news stories are organized using an inverted pyramid style
+in which information is presented in descending order of importance
+because ag news is a news corpus
+each text writing style in the corpus follows the inverted pyramid style
+the indication word positions in an article within this corpus can be used to verify the relative importance of those words
+we select two indication words
+google and computer
+which are both indication words for the second cluster
+from the tcre and freq model explanation results
+respectively
+we consider information about the relative position of each word in each text
+and plot a kernel density graph
+as shown in figure
+a word relative position can be acquired by the formula
+word first occurring position length of article
+the indication word google discovered by our tcre model almost always appears in the first few sentences
+however
+the distribution of the indication word computer discovered by the freq model is highly dispersive
+these results laterally validate the proposed model ability to mine clusters indication words
+we also employ the tcre model to explain the tf-idf-based k-means results for the ag news dataset
+as shown in the third part of table
+the meaning of each row is not apparent
+for example
+the second row includes indication words related to business and technology
+we cannot directly understand the meaning of this cluster
+this may occur because the tf-idf-based k-means method achieves low accuracy compared to the lm+mean+ln+km configuration
+hence
+we can qualitatively analyze the quality of the clustering results according to the tcre model
+conclusion
+in this paper
+we have proposed a deep feature-based text clustering dftc framework that integrates sequence information and natural language inference semantics
+the experimental results show that our dftc model framework outperforms classic text clustering models and the state-of-the-art pretrained language model bert
+the performance of most existing data clustering algorithms relies heavily on the quality of features
+and these algorithms are vulnerable to high-dimensional features
+among text clustering algorithms
+the bag-of-words model is the most common
+some corpora
+such as a social media corpus
+will contain some slang words and misspelled words that will induce a high-dimensional feature space
+in addition
+these models cannot process gaps in word meaning such as synonyms and polysemy
+our proposed text clustering model is based on a deep pretrained model that can construct the meaning of words by contextual information
+when processing texts
+our model will map the texts into a dense
+low-dimensional space
+which directly avoids the processing of high-dimensional sparse features
+hence
+our model is not vulnerable to high-dimensional data
+the dftc framework can substantially contribute to document organization
+corpus summarization
+and content-based recommender systems from the perspective of deep semantics
+in this paper
+we visualize deep text features and investigate the latent mechanisms of dftc
+moreover
+a text clustering results explanation tcre model is proposed to describe the semantics of the clustering results and provide a qualitative method to help the user analyze the quality of the clustering results
+the tcre model not only demonstrates why dftc framework models outperform the best-compared methods but also sheds light on why a deep learning-based deep feature extractor can lead to performance improvements
+we reveal evidence for why bilstms work well for the extraction of text semantics
+the reasoning is based on an inverted pyramid style of writing
+however
+our current text clustering model is not an end-to-end approach
+hence
+in the future
+we will explore an end-to-end deep text clustering model
+references
+self organization of a massive document collection
+a survey of text clustering algorithms
+in mining text data
+a content-based recommender system for computer science publications
+knowledge-based system
+text clustering with seeds affinity propagation
+short text conceptualization using a probabilistic knowledge-base
+latent dirichlet allocation
+a dirichlet multinomial mixture model-based approach for short text clustering
+advances in natural language processing
+hierarchical multi-label text classification
+an attention-based recurrent network approach
+an analysis of the influence of deep neural network dnn topology in bottleneck feature based language recognition
+neural machine translation by jointly learning to align and translate
+self-taught convolutional neural networks for short text clustering
+semi-supervised clustering for short text via deep representation learning
+ontology-based semantic similarity
+a new feature-based approach
+supervised learning of universal sentence representations from natural language inference data
+deep contextualized word representations
+efficient estimation of word representations in vector space
+a survey on transfer learning
+how transferable are features in deep neural networks
+universal language model fine-tuning for text classification
+bert
+pre-training of deep bidirectional transformers for language understanding
+language models are unsupervised multitask learners
+deep learning in neural networks
+an overview
+unsupervised deep embedding for clustering analysis
+improved deep embedded clustering with local structure preservation
+towards k-means-friendly spaces
+simultaneous deep learning and clustering
+variational deep embedding
+an unsupervised and generative approach to clustering
+rnnlm recurrent neural network language modeling toolkit
+lstm long short-term memory
+generating sequences with recurrent neural networks
+regularizing and optimizing lstm language models
+an analysis of neural language modeling at multiple scales
+layer normalization
+text understanding from scratch
+locally consistent concept factorization for document clustering
+document clustering based on non-negative matrix factorization
+principal component analysis for clustering gene expression data
+finding scientific topics
+visualizing data using t-sne
+the inverted pyramid
+an introduction to a semiotics of media language

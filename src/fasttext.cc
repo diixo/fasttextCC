@@ -469,7 +469,7 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
       }
       if (args_->verbose > 3)
       {
-         printf("[%s] --> ::bow\n", dict_->getWord(line[w]).c_str());
+         printf("::bow\n[%s] : ", dict_->getWord(line[w]).c_str());
 
          for (int i = 0; i < bow.size(); i++)
          {

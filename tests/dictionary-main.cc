@@ -56,9 +56,33 @@ void test()
    similarity = 0.f;
 }
 
+void test_nn()
+{
+   auto ft = std::make_shared<fasttext::FastText>();
+   auto args = std::make_shared<fasttext::Args>();
+   args->minCount = 1;
+   args->maxn = 0;
+   args->input = "train-nn-w.txt";
+   args->stopwords = "stopwords.txt";
+   args->epoch = 200;
+   args->lrUpdateRate = args->epoch / 10;
+   args->dim = 10;
+   args->loss = fasttext::loss_name::softmax;
+   args->model = fasttext::model_name::cbow;
+   args->thread = 1;
+   args->vocabSz = 1511;
+   args->ws = 2;
+   ft->train(*args);
+
+   printPredictions(ft->getNN("software", 10), true, true);
+   real similarity = ft->getSimilarity("c++", "python");
+   similarity = 0.f;
+}
+
+
 int main()
 {
-   test();
+   test_nn();
    return 0;
 
    auto args = std::make_shared<fasttext::Args>();
