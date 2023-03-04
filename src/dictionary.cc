@@ -596,10 +596,6 @@ int32_t Dictionary::getLine(
   labels.clear();
   while (readWord(in, token))
   {
-     if (token.empty())
-     {
-        break;
-     }
     uint32_t h = hash(token);
     int32_t wid = getId(token, h);
     entry_type type = wid < 0 ? getType(token) : getType(wid);
