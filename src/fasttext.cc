@@ -447,6 +447,11 @@ void FastText::cbow(Model::State& state, real lr, const std::vector<int32_t>& li
       printf("\n");
    }
 
+   if (line.size() < 2)
+   {
+      return;
+   }
+
    std::vector<int32_t> bow;
    std::uniform_int_distribution<> uniform(1, args_->ws);
    for (int32_t w = 0; w < line.size(); w++)
@@ -554,37 +559,21 @@ void FastText::predict(
   model_->predict(words, k, threshold, predictions, state);
 }
 
-bool FastText::predictLine(const std::string& in, std::vector<std::pair<real, std::string>>& predictions, real threshold)
+bool FastText::predictLine(
+   const std::vector<int32_t>& words, 
+   std::vector<std::pair<real, std::string>>& predictions, 
+   real threshold) const
 {
    if (args_->model != model_name::cbow) {
       throw std::invalid_argument("Model needs to be cbow!");
    }
-   std::vector<int32_t> words, labels;
    std::set <int32_t> wuniq;
-
-   const char ALLOWABLE[] = { '\n', '\r', '\t', ' ', ',', '!', ';', '\"', '|', 0x00ab, 0x00bb, 0x00a0 };
-
-   int32_t i0 = -1;
-   for (size_t i = 0; i < in.size(); i++)
-   {
-      if (strchr(ALLOWABLE, in[i]))
-      {
-         if (i - i0 > 1)
-         {
-            i0++;
-            std::string str(&in[i0], i - i0);
-            int32_t id = dict_->getId(std::string(&in[i0], i - i0));
-            if (id >= 0)
-            {
-               words.push_back(id);
-               wuniq.insert(id);
-            }
-         }
-         i0 = i;
+   for (auto id : words) {
+      if (id >= 0) {
+         wuniq.insert(id);
       }
    }
-   if (words.size() <= 1)
-   {
+   if (wuniq.size() <= 1) {
       return false;
    }
 
@@ -609,7 +598,25 @@ bool FastText::predictLine(const std::string& in, std::vector<std::pair<real, st
          }
       }
    }
-   return true;
+   return (predictions.size() > 0);
+}
+
+bool FastText::predictNext(
+   std::wistream& in,
+   std::vector<std::pair<real, std::string>>& predictions,
+   real threshold) const
+{
+   predictions.clear();
+   if (in.peek() == EOF) {
+      return false;
+   }
+
+   std::vector<int32_t> words, labels;
+   bool result = (dict_->getLine(in, words, stopwords_) > 0);
+
+   result = predictLine(words, predictions, threshold);
+
+   return result;
 }
 
 bool FastText::predictLine(

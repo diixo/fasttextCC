@@ -381,6 +381,49 @@ void analogies(const std::vector<std::string> args)
   exit(0);
 }
 
+void predict_next(const std::vector<std::string>& args)
+{
+   if (args.size() < 4 || args.size() > 6)
+   {
+      printPredictUsage();
+      exit(EXIT_FAILURE);
+   }
+
+   real threshold = 0.0;
+   if (args.size() > 4) {
+      if (args.size() == 5) {
+         threshold = std::stof(args[4]);
+      }
+   }
+
+   bool printProb = args[1] == "predict-next";
+   FastText fasttext;
+   fasttext.loadModel(std::string(args[2]));
+
+   std::wifstream ifs;
+   std::string infile(args[3]);
+   bool inputIsStdIn = infile == "-";
+   if (!inputIsStdIn) {
+      ifs.open(cstr_to_wstr(infile));
+      if (!inputIsStdIn && !ifs.is_open()) {
+         std::cerr << "Input file cannot be opened!" << std::endl;
+         exit(EXIT_FAILURE);
+      }
+   }
+   std::vector<std::pair<real, std::string>> predictions;
+   std::wistream& in = inputIsStdIn ? std::wcin : ifs;
+
+   while (in.good())
+   {
+      fasttext.predictNext(in, predictions, threshold);
+   }
+
+   if (ifs.is_open()) {
+      ifs.close();
+   }
+   exit(0);
+}
+
 void similarity(const std::vector<std::string> args)
 {
    std::string word1;
@@ -546,6 +589,10 @@ int main(int argc, char** argv)
   else if (command == "similarity")
   {
      similarity(args);
+  }
+  else if (command == "predict-next")
+  {
+     predict_next(args);
   }
   else if (command == "predict" || command == "predict-prob")
   {

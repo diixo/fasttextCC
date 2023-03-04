@@ -35,23 +35,6 @@ void test()
    args->ws = 1;
    ft->train(*args);
 
-   //************************
-   real threshold = 0.f;
-   bool printProb = true;
-
-   std::vector<std::pair<real, std::string>> predictions;
-   std::string str;
-   while (true)
-   {
-      std::cout << "predictLine:" << std::endl;
-      getline(std::cin, str);
-      if (!ft->predictLine(str + " ", predictions, threshold))
-      {
-         break;
-      }
-      printPredictions(predictions, printProb, false);
-   }
-
    real similarity = ft->getSimilarity("c++", "python");
    similarity = 0.f;
 }
@@ -74,9 +57,29 @@ void test_nn()
    args->ws = 2;
    ft->train(*args);
 
-   printPredictions(ft->getNN("software", 10), true, true);
-   real similarity = ft->getSimilarity("c++", "python");
-   similarity = 0.f;
+   // ctrl+z = EOF marker to skip CIN.
+   std::wistream& in = std::wcin;
+   std::vector<std::pair<real, std::string>> predictions;
+
+
+   //while (in.rdbuf()->sungetc() != std::char_traits<char>::eof()
+   //   && in.get() != in.widen('\n'))
+   //{
+   //   ft->predictNext(in, predictions, 0.f);
+   //   continue;
+   //}
+
+   real threshold = 0.f;
+   bool printProb = true;
+  
+   while (in.good())
+   {
+      if (!ft->predictNext(in, predictions, threshold))
+      {
+         break;
+      }
+      printPredictions(predictions, printProb, false);
+   }
 }
 
 
