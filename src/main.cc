@@ -389,10 +389,12 @@ void predict_next(const std::vector<std::string>& args)
       exit(EXIT_FAILURE);
    }
 
+   int32_t k = 1;
    real threshold = 0.0;
    if (args.size() > 4) {
-      if (args.size() == 5) {
-         threshold = std::stof(args[4]);
+      k = std::stoi(args[4]);
+      if (args.size() == 6) {
+         threshold = std::stof(args[5]);
       }
    }
 
@@ -415,7 +417,7 @@ void predict_next(const std::vector<std::string>& args)
 
    while (in.good())
    {
-      fasttext.predictNext(in, predictions, threshold);
+      fasttext.predictNext(in, predictions, k, threshold);
    }
 
    if (ifs.is_open()) {

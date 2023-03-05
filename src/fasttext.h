@@ -152,11 +152,7 @@ class FastText
   bool predictNext(
      std::wistream& in,
      std::vector<std::pair<real, std::string>>& predictions,
-     real threshold) const;
-
-  bool predictNext(
-     const std::vector<int32_t>& words,
-     std::vector<std::pair<real, std::string>>& predictions,
+     int32_t k,
      real threshold) const;
 
   std::vector<std::pair<std::string, Vector>> getNgramVectors(

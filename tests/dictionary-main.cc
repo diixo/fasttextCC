@@ -63,9 +63,6 @@ void test_nn()
 
    // ctrl+z = EOF marker to skip CIN.
 
-   std::vector<std::pair<real, std::string>> predictions;
-
-
    //while (in.rdbuf()->sungetc() != std::char_traits<char>::eof()
    //   && in.get() != in.widen('\n'))
    //{
@@ -73,17 +70,20 @@ void test_nn()
    //   continue;
    //}
 
-   real threshold = 0.f;
+   real threshold = 0.5f;
    bool printProb = true;
+   std::vector<std::pair<real, std::string>> predictions;
 
-   std::wstringstream s0(L"data specialist");   //science
-   std::wstringstream s1(L"data structures");   //entity
-   std::wstringstream s2(L"data algorithms");   //entity
+   std::wstringstream s0(L"data specialist");   // science
+   std::wstringstream s1(L"data structures");   // entity
+   std::wstringstream s2(L"data algorithms");   // entity
+   std::wstringstream s3(L"learn language");    // 10:[c++, python, java, javascript, kotlin, php, golang, swift, c-language, c#]
+   std::wstringstream s4(L"data entity");       // 4:[structures, algorithms, mathematical, science]
    std::wistream& in = s0;
   
    while (in.good())
    {
-      if (!ft->predictNext(in, predictions, threshold))
+      if (!ft->predictNext(in, predictions, 10, threshold))
       {
          break;
       }

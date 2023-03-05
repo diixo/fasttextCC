@@ -560,20 +560,30 @@ void FastText::predict(
 }
 
 bool FastText::predictNext(
-   const std::vector<int32_t>& words, 
-   std::vector<std::pair<real, std::string>>& predictions, 
+   std::wistream& in,
+   std::vector<std::pair<real, std::string>>& predictions,
+   int32_t k,
    real threshold) const
 {
    if (args_->model != model_name::cbow) {
       throw std::invalid_argument("Model needs to be cbow!");
    }
-   std::set <int32_t> wuniq;
+
+   predictions.clear();
+   if (in.peek() == EOF) {
+      return false;
+   }
+
+   std::vector<int32_t> words;
+   bool result = (dict_->getLine(in, words, stopwords_) > 0);
+
+   std::set <int32_t> banSet;
    for (auto id : words) {
       if (id >= 0) {
-         wuniq.insert(id);
+         banSet.insert(id);
       }
    }
-   if (wuniq.size() <= 1) {
+   if (banSet.size() <= 1) {
       return false;
    }
 
@@ -584,30 +594,26 @@ bool FastText::predictNext(
 
    if (max_id >= 0)
    {
-      if (state.output[max_id] > threshold)
+      std::vector<std::pair<real, std::string>>& heap = predictions;
+
+      for (int32_t i = 0; i < state.output.size(); i++)
       {
-         predictions.push_back(std::pair<real, std::string>(state.output[max_id], dict_->getWord(max_id)));
+         if (banSet.find(i) == banSet.end())
+         {
+            if (heap.size() == k && similarity < heap.front().first) {
+               continue;
+            }
+            heap.push_back(std::make_pair(state.output[i], dict_->getWord(i)));
+            std::push_heap(heap.begin(), heap.end(), comparePairs);
+            if (heap.size() > k) {
+               std::pop_heap(heap.begin(), heap.end(), comparePairs);
+               heap.pop_back();
+            }
+         }
       }
+      std::sort_heap(heap.begin(), heap.end(), comparePairs);
    }
    return (predictions.size() > 0);
-}
-
-bool FastText::predictNext(
-   std::wistream& in,
-   std::vector<std::pair<real, std::string>>& predictions,
-   real threshold) const
-{
-   predictions.clear();
-   if (in.peek() == EOF) {
-      return false;
-   }
-
-   std::vector<int32_t> words;
-   bool result = (dict_->getLine(in, words, stopwords_) > 0);
-
-   if (result) result = predictNext(words, predictions, threshold);
-
-   return result;
 }
 
 bool FastText::predictLine(
