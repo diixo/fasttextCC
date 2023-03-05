@@ -559,7 +559,7 @@ void FastText::predict(
   model_->predict(words, k, threshold, predictions, state);
 }
 
-bool FastText::predictLine(
+bool FastText::predictNext(
    const std::vector<int32_t>& words, 
    std::vector<std::pair<real, std::string>>& predictions, 
    real threshold) const
@@ -577,25 +577,16 @@ bool FastText::predictLine(
       return false;
    }
 
-   int32_t max_id = -1;
    real similarity = threshold;
 
-   for (int32_t i = 0; i < dict_->size(); i++)
-   {
-      auto id = dict_->getId(dict_->getWord(i));
+   Model::State state(args_->dim, output_->size(0), 0);
+   int32_t max_id = model_->getMaxTargetId(words, state);
 
-      if (wuniq.find(id) == wuniq.end())
+   if (max_id >= 0)
+   {
+      if (state.output[max_id] > threshold)
       {
-         Model::State state(args_->dim, output_->size(0), 0);
-         if (model_->getMaxTargetId(words, state) == id)
-         {
-            predictions.push_back(std::pair<real, std::string>(state.output[id], dict_->getWord(i)));
-            if (state.output[id] > similarity)
-            {
-               similarity = state.output[id];
-               max_id = id;
-            }
-         }
+         predictions.push_back(std::pair<real, std::string>(state.output[max_id], dict_->getWord(max_id)));
       }
    }
    return (predictions.size() > 0);
@@ -611,10 +602,10 @@ bool FastText::predictNext(
       return false;
    }
 
-   std::vector<int32_t> words, labels;
+   std::vector<int32_t> words;
    bool result = (dict_->getLine(in, words, stopwords_) > 0);
 
-   result = predictLine(words, predictions, threshold);
+   if (result) result = predictNext(words, predictions, threshold);
 
    return result;
 }

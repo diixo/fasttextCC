@@ -14,6 +14,8 @@
 #include "fasttext.h"
 #include "utils.h"
 
+#include <sstream>
+
 using namespace fasttext;
 
 const int VOCAB_SZ = 577;
@@ -35,6 +37,8 @@ void test()
    args->ws = 1;
    ft->train(*args);
 
+   printPredictions(ft->getNN("c++", 10), true, true);
+
    real similarity = ft->getSimilarity("c++", "python");
    similarity = 0.f;
 }
@@ -45,7 +49,7 @@ void test_nn()
    auto args = std::make_shared<fasttext::Args>();
    args->minCount = 1;
    args->maxn = 0;
-   args->input = "train-nn-w.txt";
+   args->input = "train.txt";
    args->stopwords = "stopwords.txt";
    args->epoch = 200;
    args->lrUpdateRate = args->epoch / 10;
@@ -58,7 +62,7 @@ void test_nn()
    ft->train(*args);
 
    // ctrl+z = EOF marker to skip CIN.
-   std::wistream& in = std::wcin;
+
    std::vector<std::pair<real, std::string>> predictions;
 
 
@@ -71,6 +75,11 @@ void test_nn()
 
    real threshold = 0.f;
    bool printProb = true;
+
+   std::wstringstream s0(L"data specialist");   //science
+   std::wstringstream s1(L"data structures");   //entity
+   std::wstringstream s2(L"data algorithms");   //entity
+   std::wistream& in = s0;
   
    while (in.good())
    {
@@ -78,8 +87,9 @@ void test_nn()
       {
          break;
       }
-      printPredictions(predictions, printProb, false);
+      printPredictions(predictions, printProb, true);
    }
+   return;
 }
 
 
