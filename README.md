@@ -146,9 +146,22 @@ $ ./fasttext cbow -input train-data.txt -output train-data -minCount 1 -stopword
 Predict next word for sequence words (only for CBOW-mode)
 
 ```
-./fasttext predict-next result/fil9.bin
+./fasttext predict-next model.bin
 ```
+Now let's have a look on our predictions, we want as many prediction as possible (argument -1) and we want only labels with probability higher or equal to 0.5 :
 
+```
+./fasttext predict-next model.bin - -1 0.5
+```
+and then type the sentence:
+
+*data structures*
+
+The original sentence is: *data structures entity*. Now we get result :
+
+```
+entity
+```
 ### Printing word vectors
 
 Searching and printing word vectors directly from the `fil9.vec` file is cumbersome. Fortunately, there is a `print-word-vectors` functionality in fastText.
