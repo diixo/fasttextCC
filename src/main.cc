@@ -34,6 +34,8 @@ void printUsage()
       << "  predict                 predict most likely labels\n"
       << "  predict-prob            predict most likely labels with "
          "probabilities\n"
+     << "  predict-next             predict most likely next word of words sequence with "
+         "probabilities\n"
       << "  skipgram                train a skipgram model\n"
       << "  cbow                    train a cbow model\n"
       << "  print-word-vectors      print word vectors given a trained model\n"
@@ -69,6 +71,17 @@ void printPredictUsage()
 {
   std::cerr
       << "usage: fasttext predict[-prob] <model> <test-data> [<k>] [<th>]\n\n"
+      << "  <model>      model filename\n"
+      << "  <test-data>  test data filename (if -, read from stdin)\n"
+      << "  <k>          (optional; 1 by default) predict top k labels\n"
+      << "  <th>         (optional; 0.0 by default) probability threshold\n"
+      << std::endl;
+}
+
+void printPredictNextUsage()
+{
+   std::cerr
+      << "usage: fasttext predict[-next] <model> <test-data> [<k>] [<th>]\n\n"
       << "  <model>      model filename\n"
       << "  <test-data>  test data filename (if -, read from stdin)\n"
       << "  <k>          (optional; 1 by default) predict top k labels\n"
@@ -385,7 +398,7 @@ void predict_next(const std::vector<std::string>& args)
 {
    if (args.size() < 4 || args.size() > 6)
    {
-      printPredictUsage();
+      printPredictNextUsage();
       exit(EXIT_FAILURE);
    }
 
