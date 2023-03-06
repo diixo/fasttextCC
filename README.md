@@ -12,6 +12,7 @@ FastText is a library for efficient learning of word representations and sentenc
 
 ## Table of contents
 
+* [Usage](#usage)
 * [Requirements](#requirements)
 * [Building fastText](#building-fasttext)
    * [Building fastText using make (preferred)](#building-fasttext-using-make-preferred)
@@ -37,6 +38,34 @@ FastText is a library for efficient learning of word representations and sentenc
    * [Bag of Tricks for Efficient Text Classification](#bag-of-tricks-for-efficient-text-classification)
    * [FastText.zip: Compressing text classification models](#fasttextzip-compressing-text-classification-models)
 * [License](#license)
+
+## Usage
+Running the binary without any argument will print the high level documentation, showing the different use cases supported by fastText:
+
+```
+>> ./fasttext
+usage: fasttext <command> <args>
+
+The commands supported by fasttext are:
+
+  supervised              train a supervised classifier
+  quantize                quantize a model to reduce the memory usage
+  test                    evaluate a supervised classifier
+  test-label              print labels with precision and recall scores
+  predict                 predict most likely labels
+  predict-prob            predict most likely labels with probabilities
+  predict-next            predict most likely next word of words sequence with probabilities
+  skipgram                train a skipgram model
+  cbow                    train a cbow model
+  print-word-vectors      print word vectors given a trained model
+  print-sentence-vectors  print sentence vectors given a trained model
+  print-ngrams            print ngrams given a trained model and word
+  nn                      query for nearest neighbors
+  analogies               query for analogies
+  similarity              query similarity of word vs another word
+  dump                    dump arguments, dictionary, input/output vectors
+```
+Current version was extended by two additional commands for CBOW-mode: **predict-next**, **similarity**.
 
 ## Requirements
 
@@ -67,7 +96,7 @@ We discuss building the latest stable version of fastText.
 ### Building fastText using make (preferred)
 
 ```
-$ wget https://github.com/facebookresearch/fastText/archive/v0.9.2.zip
+$ wget https://github.com/diixo/fastText/archive/v0.9.2.zip
 $ unzip v0.9.2.zip
 $ cd fastText-0.9.2
 $ make
@@ -81,7 +110,7 @@ If you do not plan on using the default system-wide compiler, update the two mac
 For now this is not part of a release, so you will need to clone the master branch.
 
 ```
-$ git clone https://github.com/facebookresearch/fastText.git
+$ git clone https://github.com/diixo/fastText.git
 $ cd fastText
 $ mkdir build && cd build && cmake ..
 $ make && make install
@@ -94,7 +123,7 @@ This will create the fasttext binary and also all relevant libraries (shared, st
 For now this is not part of a release, so you will need to clone the master branch.
 
 ```
-$ git clone https://github.com/facebookresearch/fastText.git
+$ git clone https://github.com/diixo/fastText.git
 $ cd fastText
 $ make
 $ pip install .
@@ -171,6 +200,13 @@ or:
 ```
 ./fasttext predict-next model.bin text.txt 10
 ```
+
+The similarity param based on probability in value range: 0..1. Calculated by command: 
+
+```
+./fasttext similarity model.bin word1 word2
+```
+
 ### Printing word vectors
 
 Searching and printing word vectors directly from the `fil9.vec` file is cumbersome. Fortunately, there is a `print-word-vectors` functionality in fastText.
