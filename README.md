@@ -162,6 +162,15 @@ The original sentence is: *data structures entity*. Now we get result :
 ```
 entity
 ```
+The argument `k` is optional, and is equal to `1` by default.
+The argument `threshold` is optional, and is equal to `0` by default.
+```
+./fasttext predict-next model.bin text.txt
+```
+or:
+```
+./fasttext predict-next model.bin text.txt 10
+```
 ### Printing word vectors
 
 Searching and printing word vectors directly from the `fil9.vec` file is cumbersome. Fortunately, there is a `print-word-vectors` functionality in fastText.
