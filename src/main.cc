@@ -34,7 +34,7 @@ void printUsage()
       << "  predict                 predict most likely labels\n"
       << "  predict-prob            predict most likely labels with "
          "probabilities\n"
-     << "  predict-next             predict most likely next word of words sequence with "
+      << "  predict-next            predict most likely next word of words sequence with "
          "probabilities\n"
       << "  skipgram                train a skipgram model\n"
       << "  cbow                    train a cbow model\n"
@@ -46,7 +46,7 @@ void printUsage()
       << "  nn                      query for nearest neighbors\n"
       << "  analogies               query for analogies\n"
       << "  similarity              query similarity of word vs another word\n"
-      << "  dump                    dump arguments,dictionary,input/output "
+      << "  dump                    dump arguments, dictionary, input/output "
          "vectors\n"
       << std::endl;
 }
