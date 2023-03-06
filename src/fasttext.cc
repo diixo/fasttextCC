@@ -600,7 +600,7 @@ bool FastText::predictNext(
       {
          if (banSet.find(i) == banSet.end())
          {
-            if (heap.size() == k && similarity < heap.front().first) {
+            if (heap.size() == k && state.output[i] < heap.front().first || state.output[i] < threshold) {
                continue;
             }
             heap.push_back(std::make_pair(state.output[i], dict_->getWord(i)));

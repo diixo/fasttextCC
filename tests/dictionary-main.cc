@@ -70,7 +70,7 @@ void test_nn()
    //   continue;
    //}
 
-   real threshold = 0.5f;
+   real threshold = 0.01f;
    bool printProb = true;
    std::vector<std::pair<real, std::string>> predictions;
 
@@ -79,7 +79,7 @@ void test_nn()
    std::wstringstream s2(L"data algorithms");   // entity
    std::wstringstream s3(L"learn language");    // 10:[c++, python, java, javascript, kotlin, php, golang, swift, c-language, c#]
    std::wstringstream s4(L"data entity");       // 4:[structures, algorithms, mathematical, science]
-   std::wistream& in = s0;
+   std::wistream& in = s4;
   
    while (in.good())
    {
