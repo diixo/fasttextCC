@@ -267,6 +267,7 @@ nearby
 nearly
 need
 needed
+needn't
 needs
 neither
 never
